@@ -1,0 +1,43 @@
+{
+  "name": "lib-platform-rpc",
+  "version": "0.0.3",
+  "description": "Rewrite of the launcher-rpc part of the old nemolib.",
+  "main": "index.js",
+  "scripts": {
+    "test": "gulp test",
+    "install": "dev/install.sh"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@gitlab.nemotele.com:nemo-ui/lib-platform-rpc.git"
+  },
+  "keywords": [
+    "typescript",
+    "boilerplate",
+    "test",
+    "mocha",
+    "phantomjs"
+  ],
+  "author": "nemo",
+  "license": "Proprietary",
+  "devDependencies": {
+    "chai": "^2.2.0",
+    "express": "^4.12.4",
+    "glob": "^5.0.10",
+    "gulp": "^3.9.0",
+    "gulp-browserify": "^0.5.1",
+    "gulp-util": "^3.0.6",
+    "gutil": "^1.6.4",
+    "json-stringify-safe": "^5.0.1",
+    "lodash": "^3.8.0",
+    "mocha-phantomjs": "^3.5.3",
+    "sinon": "^1.14.1",
+    "sinon-chai": "^2.7.0",
+    "tsd": "^0.6.0",
+    "tsify": "^0.11.2",
+    "typescript": "^1.5.0-beta",
+    "vinyl-source-stream": "^1.1.0",
+    "watchify": "^3.2.1"
+  },
+  "dependencies": {}
+}

@@ -1,0 +1,43 @@
+{
+  "name": "ts-lib-boilerplate",
+  "version": "0.0.1",
+  "description": "Boilerplate for library written in typescript with mocha headless tests",
+  "main": "index.js",
+  "scripts": {
+    "test": "gulp test",
+    "install": "dev/install.sh"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:yevt/typesctipt-library-mocha-boilerplate.git"
+  },
+  "keywords": [
+    "typescript",
+    "boilerplate",
+    "test",
+    "mocha",
+    "phantomjs",
+    "tsd"
+  ],
+  "author": "yevt",
+  "devDependencies": {
+    "chai": "^2.2.0",
+    "express": "^4.12.4",
+    "glob": "^5.0.10",
+    "gulp": "^3.9.0",
+    "gulp-browserify": "^0.5.1",
+    "gulp-util": "^3.0.6",
+    "gutil": "^1.6.4",
+    "json-stringify-safe": "^5.0.1",
+    "lodash": "^3.8.0",
+    "mocha-phantomjs": "^3.5.3",
+    "sinon": "^1.14.1",
+    "sinon-chai": "^2.7.0",
+    "tsd": "^0.6.0",
+    "tsify": "^0.11.2",
+    "typescript": "^1.5.0-beta",
+    "vinyl-source-stream": "^1.1.0",
+    "watchify": "^3.2.1"
+  },
+  "dependencies": {}
+}

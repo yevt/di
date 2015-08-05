@@ -10,6 +10,9 @@
     },
     "chai/chai.d.ts": {
       "commit": "c50b111ded0a3a18b87b5abffea3150d6aca94da"
+    },
+    "q/Q.d.ts": {
+      "commit": "983126e131a2b81739053d60e4bbdbb46d6577b7"
     }
   }
 }

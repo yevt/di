@@ -1,5 +1,5 @@
 export class SomeClass {
-    someMethod() {
+    static someMethod() {
         return 'some value'
     }
 }

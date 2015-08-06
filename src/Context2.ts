@@ -2,7 +2,7 @@
  * Created by y.evtushenko on 06.08.15.
  */
 /// <reference path="../typings/tsd.d.ts" />
-/// <reference path="./DependencyConfig.ts" />
+/// <reference path="./interfaces/DependencyConfig.ts" />
 
 import Dependency = require('./Dependency');
 import Q = require('q');
@@ -56,16 +56,16 @@ class Context {
     resolveDependency(id):Q.Promise<any> {
         var result;
         var target = this.getDependency(id);
-        var dependencies = target.getConfig().dependencies;
+        var dependenciesConfig = target.getConfig().dependencies;
         var dependenciesPromises:Q.Promise<Dependency>[];
 
-        if (dependencies) {
-            dependenciesPromises = this.resolveDependencies(dependencies);
+        if (dependenciesConfig) {
+            dependenciesPromises = this.resolveDependencies(dependenciesConfig);
             result = Q.all(dependenciesPromises).then((args) => {
                 return target.getService(args);
             });
         } else {
-            result = target.getService();
+            result = target.getService([]);
         }
 
         return Q.resolve(result);

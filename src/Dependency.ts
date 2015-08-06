@@ -2,7 +2,7 @@
  * Created by y.evtushenko on 06.08.15.
  */
 /// <reference path="../typings/tsd.d.ts" />
-/// <reference path="./DependencyConfig.ts" />
+/// <reference path="./interfaces/DependencyConfig" />
 
 import Q = require('q');
 

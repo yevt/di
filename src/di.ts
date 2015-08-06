@@ -3,7 +3,5 @@ import Context = require('./Context');
 import q = require('q');
 
 export function createContext():q.Promise<Context> {
-    return q.fcall(() => {
-        return new Context;
-    });
+    return q.resolve(new Context);
 }

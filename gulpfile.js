@@ -1,3 +1,4 @@
+var colors = require('colors');
 var gulp = require("gulp");
 var gutil = require("gutil");
 var glob = require("glob");
@@ -44,6 +45,9 @@ function createBrowserifyBundle(files) {
 }
 function compileTests(b) {
     return b.bundle()
+        .on('error', function(error) {
+            console.error(error.message.red);
+        })
         .pipe(source('tests.js'))
         .pipe(gulp.dest(config.glob.test.dest));
 }
@@ -65,7 +69,7 @@ gulp.task('test', function () {
             mocha().on('close', function () {
                 server.close();
             });
-        });
+        })
     });
 });
 gulp.task('test:watch', function () {

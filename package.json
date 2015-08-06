@@ -22,6 +22,7 @@
   "author": "yevt",
   "devDependencies": {
     "chai": "^2.2.0",
+    "colors": "^1.1.2",
     "express": "^4.12.4",
     "glob": "^5.0.10",
     "gulp": "^3.9.0",

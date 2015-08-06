@@ -62,7 +62,7 @@ class Context {
         if (dependencies) {
             dependenciesPromises = this.resolveDependencies(dependencies);
             result = Q.all(dependenciesPromises).then((args) => {
-                return target.getService(...args);
+                return target.getService(args);
             });
         } else {
             result = target.getService();

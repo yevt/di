@@ -13,7 +13,7 @@ class Dependency {
         this._config = config;
     }
 
-    getService(...dependantServices:any[]):Q.Promise<any> {
+    getService(dependantServices:any[]):Q.Promise<any> {
         var factory:any = this._config.func;
         var result:any;
 

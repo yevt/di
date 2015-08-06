@@ -2,16 +2,18 @@
  * Created by y.evtushenko on 06.08.15.
  */
 /// <reference path="../typings/tsd.d.ts" />
-/// <reference path="./interfaces/DependencyConfig.ts" />
+/// <reference path="./interfaces.d.ts" />
 
 import Dependency = require('./Dependency');
 import Q = require('q');
 
 class Context {
 
+    _config:ContextConfig;
     _dependencies: {};
 
-    constructor() {
+    constructor(config?:ContextConfig) {
+        this._config = config;
         this._dependencies = {};
     }
 
@@ -30,7 +32,7 @@ class Context {
      */
     get(id:string):Q.Promise<any> {
         debugger;
-        return this.resolveDependencies([id])[0].then((service) => {
+        return this._resolveDependencies([id])[0].then((service) => {
             return service;
         });
     }
@@ -47,20 +49,20 @@ class Context {
         return this.getDependency(id) != null;
     }
 
-    resolveDependencies(ids:string[]):Q.Promise<Dependency>[] {
+    _resolveDependencies(ids:string[]):Q.Promise<Dependency>[] {
         return ids.map((id) => {
-            return this.resolveDependency(id);
+            return this._resolveDependency(id);
         });
     }
 
-    resolveDependency(id):Q.Promise<any> {
+    _resolveDependency(id):Q.Promise<any> {
         var result;
         var target = this.getDependency(id);
-        var dependenciesConfig = target.getConfig().dependencies;
+        var dependencyList = target.getConfig().dependencies;
         var dependenciesPromises:Q.Promise<Dependency>[];
 
-        if (dependenciesConfig) {
-            dependenciesPromises = this.resolveDependencies(dependenciesConfig);
+        if (dependencyList) {
+            dependenciesPromises = this._resolveDependencies(dependencyList);
             result = Q.all(dependenciesPromises).then((args) => {
                 return target.getService(args);
             });
@@ -72,4 +74,4 @@ class Context {
     }
 }
 
-export = Context
+export = Context;

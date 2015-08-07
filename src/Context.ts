@@ -10,9 +10,13 @@ class Context implements IContext {
     _options:IContextOptions;
     _components: {[key: string]: IComponent};
 
-    constructor(opts?:IContextOptions) {
-        this._options = opts;
+    constructor(options?:IContextOptions) {
+        this._options = options;
         this._components = {};
+
+        if (options) {
+            this._parseComponents(options.components);
+        }
     }
 
     destroy() {
@@ -73,6 +77,12 @@ class Context implements IContext {
         }
 
         return result;
+    }
+
+    _parseComponents(componentOptionsList:IComponentOptions[]) {
+        componentOptionsList.forEach((componentOptions) => {
+            this.registerComponent(componentOptions);
+        });
     }
 }
 

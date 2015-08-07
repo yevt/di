@@ -92,7 +92,7 @@ describe('context', () => {
 
     it('Create context with options', (done) => {
         var context = new Context({
-            dependencies: [
+            components: [
                 {id: 'engine', func: createEngine},
                 {id: 'car', func: createCar, dependencies: ['engine']}
             ]

@@ -1,25 +1,31 @@
 /**
  * Created by y.evtushenko on 07.08.15.
  */
-interface ContextOptions {
 
-}
-
-interface ComponentOptions {
-    id:string;
-    func:Function;
-    dependencies?:string[];
-}
-
-interface IComponent {
-    //new(options:ComponentOptions):IComponent
-    getService(dependantServices:any[]):Q.Promise<any>;
-    getOptions():ComponentOptions;
-}
+declare type Service = any;
+declare type ComponentId = string;
 
 interface IContext {
     destroy();
-    register(options:ContextOptions);
-    get(id:string):Q.Promise<any>;
-    hasDependency(id:string):boolean;
+    registerComponent(options:IContextOptions);
+    hasComponent(id:ComponentId):boolean;
+    get(id:ComponentId):Q.Promise<Service>;
 }
+
+interface IComponent {
+    //new(options:IComponentOptions):Component
+    getService(dependantServices:Service[]):Q.Promise<Service>;
+    getOptions():IComponentOptions;
+}
+
+interface IContextOptions {
+
+}
+
+interface IComponentOptions {
+    id:ComponentId;
+    func:Function;
+    dependencies?:ComponentId[];
+}
+
+

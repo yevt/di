@@ -30,18 +30,18 @@ describe('context', () => {
     });
 
     it('Register dependency', () => {
-        context.register({
+        context.registerComponent({
             id: 'engine',
             func: () => {
                 return new Engine;
             }
         });
 
-        expect(context.hasDependency('engine')).to.be.ok;
+        expect(context.hasComponent('engine')).to.be.ok;
     });
 
     it('Get service without dependencies', (done) => {
-        context.register({
+        context.registerComponent({
             id: 'engine',
             func: () => {
                 return new Engine();
@@ -56,14 +56,14 @@ describe('context', () => {
     });
 
     it('Get service with trivial dependency', (done) => {
-        context.register({
+        context.registerComponent({
             id: 'engine',
             func: () => {
                 return new Engine();
             }
         });
 
-        context.register({
+        context.registerComponent({
             id: 'car',
             func: (engine) => {
                 return new Car(engine);

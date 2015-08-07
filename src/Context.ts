@@ -7,54 +7,50 @@ import Q = require('q');
 
 class Context implements IContext {
 
-    _options:ContextOptions;
-    components: {};
+    _options:IContextOptions;
+    _components: {[key: string]: IComponent};
 
-    constructor(opts?:ContextOptions) {
+    constructor(opts?:IContextOptions) {
         this._options = opts;
-        this.components = {};
-
-
+        this._components = {};
     }
 
     destroy() {
 
     }
 
-    register(options:ComponentOptions) {
+    registerComponent(options:IComponentOptions) {
         this._setComponent(options.id, new Component(options));
     }
 
     /**
-     * Promise of dependency object
-     * @param id
-     * @returns {Q.Promise<Component>[]}
+     * Create service with dependencies and return promise of the service.
+     * @param id - Component id.
+     * @returns {Promise<Service>}
      */
-    get(id:string):Q.Promise<any> {
-        return this._resolveDependency(id).then((service) => {
-            return service;
-        });
+    get(id:ComponentId):Q.Promise<Service> {
+        return this._resolveDependency(id);
     }
 
-    hasDependency(id:string):boolean {
+    hasComponent(id:ComponentId):boolean {
         return this._getComponent(id) != null;
     }
 
-    _getComponent(id:string):Component {
-        return this.components[id];
+    _getComponent(id:ComponentId):IComponent {
+        return this._components[id];
     }
 
-    _setComponent(id:string, component:IComponent) {
-        this.components[id] = component;
+    _setComponent(id:ComponentId, component:IComponent) {
+        this._components[id] = component;
     }
 
-    _resolveDependencies(ids:string[]):Q.Promise<Component>[] {
+    _resolveDependencies(ids:ComponentId[]):Q.Promise<Component>[] {
         return ids.map((id) => {
             return this._resolveDependency(id);
         });
     }
 
-    _resolveDependency(id):Q.Promise<any> {
+    _resolveDependency(id):Q.Promise<Service> {
         var result;
         var targetComponent = this._getComponent(id);
 
@@ -80,4 +76,4 @@ class Context implements IContext {
     }
 }
 
-export = Context;
+export = Context

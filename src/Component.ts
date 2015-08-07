@@ -5,13 +5,13 @@
 import Q = require('q');
 
 class Component implements IComponent {
-    _options:ComponentOptions;
+    _options:IComponentOptions;
 
-    constructor(options:ComponentOptions) {
+    constructor(options:IComponentOptions) {
         this._options = options;
     }
 
-    getService(dependantServices) {
+    getService(dependantServices?:Service[]):Q.Promise<Service> {
         var factory = this._options.func;
         var result;
 
@@ -23,7 +23,7 @@ class Component implements IComponent {
         return result;
     }
 
-    getOptions() {
+    getOptions():IComponentOptions {
         return this._options;
     }
 }

@@ -7,6 +7,7 @@ import chai = require('chai');
 var expect = chai.expect;
 
 describe('di', () => {
+
     it('Create context', (done) => {
         di.createContext().then((context) => {
             expect(context).to.be.ok;
@@ -17,7 +18,7 @@ describe('di', () => {
 
     it('Destroy context', (done) => {
         di.createContext().then((context) => {
-            context.dispose();
+            context.destroy();
             done();
         })
         .done();

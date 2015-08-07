@@ -3,16 +3,26 @@
  */
 /// <reference path="../typings/tsd.d.ts" />
 
-import Engine = require('./mock/Engine');
-import Car = require('./mock/Car');
-
 import Context = require('../src/Context');
 
 import q = require('q');
 import chai = require('chai');
+
+import Engine = require('./mock/Engine');
+import Car = require('./mock/Car');
+
 var expect = chai.expect;
 
+var createEngine = () => {
+    return new Engine;
+};
+
+var createCar = (engine) => {
+    return new Car(engine);
+};
+
 describe('context', () => {
+
     var context:Context;
 
     before(() => {
@@ -20,16 +30,14 @@ describe('context', () => {
     });
 
     it('Register dependency', () => {
-        var factory = () => {
-            return new Engine;
-        };
-
         context.register({
             id: 'engine',
-            func: factory
+            func: () => {
+                return new Engine;
+            }
         });
 
-        expect(context.hasDependency('engine')).to.equal(true);
+        expect(context.hasDependency('engine')).to.be.ok;
     });
 
     it('Get service without dependencies', (done) => {
@@ -69,5 +77,31 @@ describe('context', () => {
             }
         })
         .done();
+    });
+
+    it('Get unresolved dependency', (done) => {
+        var context = new Context;
+
+        context.get('car').catch((error) => {
+            if (error.name = 'UNRESOLVED_DEPENDENCY') {
+                done();
+            }
+        });
+    });
+
+
+    it('Create context with options', (done) => {
+        var context = new Context({
+            dependencies: [
+                {id: 'engine', func: createEngine},
+                {id: 'car', func: createCar, dependencies: ['engine']}
+            ]
+        });
+
+        context.get('car').then((car) => {
+            car.start();
+            expect(car).to.be.an.instanceOf(Car);
+            done();
+        });
     });
 });

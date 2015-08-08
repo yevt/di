@@ -23,11 +23,39 @@ export function mapObject(param:string|any[]|any, callback:Function) {
     return result;
 }
 
-export function inject(dependencyList:string[], services:Service[], injectionMap:Object) {
+export function inject(dependencyList:string[], services:any[], injectionMap:Object) {
     return mapObject(injectionMap, (it) => {
         var dependencyIndex = dependencyList.indexOf(it);
         if (dependencyIndex != -1) {
             return services[dependencyIndex];
         }
     });
+}
+
+export function applyFactory(factory:Factory, factoryArgs:any[]):Service {
+    var blankService = Object.create(factory.prototype);
+    var factoryProduct = factory.apply(blankService, factoryArgs);
+    var result;
+
+    if (factoryProduct) {
+        result = factoryProduct;
+    } else {
+        result = blankService;
+    }
+
+    return result;
+}
+
+export module factoryWrappers {
+    export function singleton(factory) {
+        var cachedService;
+
+        return (...args) => {
+            if (!cachedService) {
+                cachedService = applyFactory(factory, args);
+            }
+
+            return cachedService
+        }
+    }
 }

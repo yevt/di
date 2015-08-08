@@ -4,7 +4,7 @@
 /// <reference path="./references.d.ts" />
 import Q = require('q');
 import Options = require('./Options');
-import helpers = require('./helpers');
+import utils = require('./utils');
 
 class Component implements IComponent {
     _options:IOptions;
@@ -21,12 +21,12 @@ class Component implements IComponent {
         var factoryArgs;
 
         if (constructorInjectionMap) {
-            factoryArgs = helpers.inject(dependencyList, dependantServices, constructorInjectionMap);
+            factoryArgs = utils.inject(dependencyList, dependantServices, constructorInjectionMap);
         } else {
             factoryArgs = dependantServices;
         }
 
-        return Q.resolve(Component.applyFactory(factory, factoryArgs));
+        return Q.resolve(utils.applyFactory(factory, factoryArgs));
     }
 
     getOptions():IOptions {
@@ -48,6 +48,8 @@ class Component implements IComponent {
 
         if (!wrapper) {
             wrapper = defaultWrapper;
+        } else if (wrapper == 'singleton') {
+            wrapper = utils.factoryWrappers.singleton;
         }
 
         if (!factory) {
@@ -61,20 +63,6 @@ class Component implements IComponent {
 
     _getDependencyList() {
         return this.getOptions().get('dependencies');
-    }
-
-    static applyFactory(factory:Factory, factoryArgs:any[]):Service {
-        var blankService = Object.create(factory.prototype);
-        var factoryProduct = factory.apply(blankService, factoryArgs);
-        var result;
-
-        if (factoryProduct) {
-            result = factoryProduct;
-        } else {
-            result = blankService;
-        }
-
-        return result;
     }
 }
 

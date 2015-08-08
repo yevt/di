@@ -3,7 +3,7 @@
  */
 /// <reference path="../src/references.d.ts" />
 
-import helpers = require('../src/helpers');
+import utils = require('../src/utils');
 
 import q = require('q');
 import chai = require('chai');
@@ -14,7 +14,7 @@ describe('helpers', () => {
         it('String parameter', () => {
             var str = 'a';
 
-            var result = helpers.mapObject(str, (it) => {
+            var result = utils.mapObject(str, (it) => {
                 return it.toUpperCase();
             });
 
@@ -24,7 +24,7 @@ describe('helpers', () => {
         it('Array parameter', () => {
             var arr = ['a', 'b'];
 
-            var result = helpers.mapObject(arr, (it) => {
+            var result = utils.mapObject(arr, (it) => {
                 return it.toUpperCase();
             });
 
@@ -34,7 +34,7 @@ describe('helpers', () => {
         it('Object parameter', () => {
             var obj = {a: 'a'};
 
-            var result = helpers.mapObject(obj, (it) => {
+            var result = utils.mapObject(obj, (it) => {
                 return it.toUpperCase();
             });
 
@@ -44,7 +44,7 @@ describe('helpers', () => {
         it('Mixed parameter', () => {
             var obj = [{a: 'a'}, ['b'], 'c'];
 
-            var result = helpers.mapObject(obj, (it) => {
+            var result = utils.mapObject(obj, (it) => {
                 return it.toUpperCase();
             });
 

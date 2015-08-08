@@ -11,7 +11,7 @@ import chai = require('chai');
 import Engine = require('./mock/Engine');
 import Car = require('./mock/Car');
 import Driver = require('./mock/Driver');
-import Component = require('../src/Component');
+import utils = require('../src/utils');
 
 var expect = chai.expect;
 
@@ -154,9 +154,7 @@ describe('context', () => {
         }).done();
     });
 
-    it('Factory wrapper', (done) => {
-        debugger;
-
+    it('Custom factory wrapper', (done) => {
         var context = new Context({
             components: [
                 {
@@ -167,7 +165,7 @@ describe('context', () => {
 
                         return (...args) => {
                             if (!cachedService) {
-                                cachedService = Component.applyFactory(factory, args);
+                                cachedService = utils.applyFactory(factory, args);
                             }
 
                             return cachedService
@@ -180,12 +178,28 @@ describe('context', () => {
         });
 
         Q.all([context.get('car1'), context.get('car2')]).then((cars) => {
-            console.log('cars ===>', cars);
             expect(cars[0]._engine).to.equal(cars[1]._engine);
             done();
         }).done();
+    });
 
+    it('Singleton factory wrapper', (done) => {
+        var context = new Context({
+            components: [
+                {
+                    id: 'engine',
+                    func: Engine,
+                    factoryWrapper: 'singleton'
+                },
+                {id: 'car1', func: Car, dependencies:['engine']},
+                {id: 'car2', func: Car, dependencies:['engine']}
+            ]
+        });
 
+        Q.all([context.get('car1'), context.get('car2')]).then((cars) => {
+            expect(cars[0]._engine).to.equal(cars[1]._engine);
+            done();
+        }).done();
     });
 
     it('Create context with options', (done) => {

@@ -14,7 +14,14 @@ class Component implements IComponent {
 
     getService(dependantServices?:Service[]):Q.Promise<Service> {
         var factory = this._options.func;
-        var factoryArgs = this._parseServiceFactoryArguments(dependantServices, this._options.inject);
+        var factoryArgs;
+        var inject = this._options.inject;
+
+        if (inject) {
+            factoryArgs = this._parseServiceFactoryArguments(dependantServices, inject);
+        } else {
+            factoryArgs = dependantServices;
+        }
 
         var blankService = Object.create(factory.prototype);
         var factoryProduct = factory.apply(blankService, factoryArgs);
@@ -33,17 +40,11 @@ class Component implements IComponent {
         return this._options;
     }
 
-    _parseServiceFactoryArguments(dependencies:Service[], injectionMap:IInjectionMap = {}):any[] {
-        var constructorInjectionMap = injectionMap.intoConstructor;
-        var result;
-
+    _parseServiceFactoryArguments(dependencies:Service[], inject:IInjectionMap):any[] {
+        var constructorInjectionMap = inject.intoConstructor;
         if (constructorInjectionMap) {
-            result = this._createConstructorInjection(dependencies, constructorInjectionMap);
-        } else {
-            result = dependencies;
+            return this._createConstructorInjection(dependencies, constructorInjectionMap);
         }
-
-        return result;
     }
 
     _createConstructorInjection(dependencies:Service[], injectionMap:any):any[] {

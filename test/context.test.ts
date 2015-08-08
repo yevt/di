@@ -104,8 +104,6 @@ describe('context', () => {
     });
 
     it('Injection map', (done) => {
-        debugger;
-
         var context = new Context({
             components: [
                 {id: 'engine', func: createEngine},

@@ -24,13 +24,9 @@ var createCar = (engine) => {
 
 describe('context', () => {
 
-    var context:Context;
-
-    before(() => {
-        context = new Context;
-    });
-
     it('Register dependency', () => {
+        var context = new Context;
+
         context.registerComponent({
             id: 'engine',
             func: () => {
@@ -42,6 +38,8 @@ describe('context', () => {
     });
 
     it('Get service without dependencies', (done) => {
+        var context = new Context;
+
         context.registerComponent({
             id: 'engine',
             func: () => {
@@ -57,6 +55,8 @@ describe('context', () => {
     });
 
     it('Get service with trivial dependency', (done) => {
+        var context = new Context;
+
         context.registerComponent({
             id: 'engine',
             func: () => {
@@ -81,6 +81,8 @@ describe('context', () => {
     });
 
     it('Get unresolved dependency', (done) => {
+        debugger;
+
         var context = new Context;
 
         context.get('car').catch((error) => {

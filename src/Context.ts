@@ -3,19 +3,23 @@
  */
 /// <reference path="./references.d.ts" />
 import Component = require('./Component');
+import Options = require('./Options');
 import Q = require('q');
 
 class Context implements IContext {
 
-    _options:IContextOptions;
+    _options:IOptions;
     _components: {[key: string]: IComponent};
 
-    constructor(options?:IContextOptions) {
+    constructor(opts?:IContextOptions) {
+        var options = new Options(opts);
+        var componentList = options.get('components');
+
         this._options = options;
         this._components = {};
 
-        if (options) {
-            this._parseComponents(options.components);
+        if (componentList) {
+            this._parseComponents(componentList);
         }
     }
 
@@ -56,22 +60,23 @@ class Context implements IContext {
 
     _resolveDependency(id):Q.Promise<Service> {
         var result;
-        var targetComponent = this._getComponent(id);
+        var component = this._getComponent(id);
+        var dependencyList:string[];
+        var servicePromiseList:Q.Promise<Component>[];
+        var error:Error;
 
-        if (targetComponent) {
-            var dependencyList = targetComponent.getOptions().get('dependencies');
-            var dependenciesPromises:Q.Promise<Component>[];
-
+        if (component) {
+            dependencyList = component.getOptions().get('dependencies');
             if (dependencyList) {
-                dependenciesPromises = this._resolveDependencies(dependencyList);
-                result = Q.all(dependenciesPromises).then((args) => {
-                    return targetComponent.getService(args);
+                servicePromiseList = this._resolveDependencies(dependencyList);
+                result = Q.all(servicePromiseList).then((args) => {
+                    return component.getService(args);
                 });
             } else {
-                result = targetComponent.getService();
+                result = component.getService();
             }
         } else {
-            var error:Error = new Error("Unresolved dependency");
+            error = new Error("Unresolved dependency");
             error.name = 'UNRESOLVED_DEPENDENCY';
             result = Q.reject(error);
         }

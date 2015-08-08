@@ -6,7 +6,7 @@
 class Options implements IOptions {
     _opts: any;
 
-    constructor(opts) {
+    constructor(opts = {}) {
         this._opts = opts;
     }
 

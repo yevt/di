@@ -58,7 +58,7 @@ class Context implements IContext {
         var result;
         var targetComponent = this._getComponent(id);
 
-        if (targetComponent != null) {
+        if (targetComponent) {
             var dependencyList = targetComponent.getOptions().dependencies;
             var dependenciesPromises:Q.Promise<Component>[];
 
@@ -68,7 +68,7 @@ class Context implements IContext {
                     return targetComponent.getService(args);
                 });
             } else {
-                result = targetComponent.getService([]);
+                result = targetComponent.getService();
             }
         } else {
             var error:Error = new Error("Unresolved dependency");

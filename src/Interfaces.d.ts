@@ -4,11 +4,17 @@
 
 declare type Service = any;
 declare type ComponentId = string;
+declare type DependencyId = string;
+
+interface IInjectionMap {
+    intoConstructor?: any | any[]
+}
 
 interface IComponentOptions {
     id:ComponentId;
     func:Function;
     dependencies?:ComponentId[];
+    inject?: IInjectionMap;
 }
 
 interface IComponent {

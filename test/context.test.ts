@@ -10,6 +10,7 @@ import chai = require('chai');
 
 import Engine = require('./mock/Engine');
 import Car = require('./mock/Car');
+import Driver = require('./mock/Driver');
 
 var expect = chai.expect;
 
@@ -89,6 +90,45 @@ describe('context', () => {
         });
     });
 
+    it('Component with constructor instead of factory', (done) => {
+        var context = new Context({
+            components: [
+                {id: 'engine', func: Engine}
+            ]
+        });
+
+        context.get('engine').then((engine) => {
+            engine.start();
+            done();
+        });
+    });
+
+    it('Injection map', (done) => {
+        debugger;
+
+        var context = new Context({
+            components: [
+                {id: 'engine', func: createEngine},
+                {id: 'car', func: createCar, dependencies: ['engine']},
+                {
+                    id: 'driver',
+                    func: Driver,
+                    dependencies: ['car'],
+                    inject: {
+                        intoConstructor: [{
+                            car: 'car'
+                        }]
+                    }
+                }
+            ]
+        });
+
+        context.get('driver').then((driver) => {
+            driver.drive();
+            expect(driver).to.be.an.instanceOf(Driver);
+            done();
+        });
+    });
 
     it('Create context with options', (done) => {
         var context = new Context({
@@ -104,4 +144,5 @@ describe('context', () => {
             done();
         });
     });
+
 });

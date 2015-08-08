@@ -215,20 +215,4 @@ describe('context', () => {
             done();
         }).done();
     });
-
-    it('Create context with options', (done) => {
-        var context = new Context({
-            components: [
-                {id: 'engine', func: createEngine},
-                {id: 'car', func: createCar, dependencies: ['engine']}
-            ]
-        });
-
-        context.get('car').then((car) => {
-            car.start();
-            expect(car).to.be.an.instanceOf(Car);
-            done();
-        }).done();
-    });
-
 });

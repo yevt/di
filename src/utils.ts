@@ -32,7 +32,7 @@ export function inject(dependencyList:string[], services:any[], injectionMap:Obj
     });
 }
 
-export function applyFactory(factory:Factory, factoryArgs:any[]):Service {
+export function applyFactory(factory:Factory, factoryArgs:any):Service {
     var blankService = Object.create(factory.prototype);
     var factoryProduct = factory.apply(blankService, factoryArgs);
     var result;

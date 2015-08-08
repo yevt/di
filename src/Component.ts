@@ -19,17 +19,17 @@ class Component implements IComponent {
         var factory = this._getFactory();
         var dependencyList = this.getOptions().get('dependencies');
         var constructorInjectionMap = this._getConstructorInjectionMap();
-        var factoryArgs = dependantServices || [];
+        var factoryArgs = _.assign([], dependantServices);
         var argsFromOptions = this.getOptions().get('args');
         var injection;
 
         if (constructorInjectionMap) {
             injection = utils.inject(dependencyList, dependantServices, constructorInjectionMap);
-            _.extend(factoryArgs, injection);
+            _.assign(factoryArgs, injection);
         }
 
         if (argsFromOptions) {
-            _.extend(factoryArgs, argsFromOptions);
+            _.assign(factoryArgs, argsFromOptions);
         }
 
         return Q.resolve(utils.applyFactory(factory, factoryArgs));

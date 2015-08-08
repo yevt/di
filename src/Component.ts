@@ -14,6 +14,8 @@ class Component implements IComponent {
     }
 
     getService(dependantServices?:Service[]):Q.Promise<Service> {
+        debugger;
+
         var factory = this._options.get('func');
         var factoryArgs;
         var inject = this._options.get('inject');

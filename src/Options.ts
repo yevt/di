@@ -10,8 +10,23 @@ class Options implements IOptions {
         this._opts = opts;
     }
 
-    get(path) {
-        return this._opts[path];
+    get(path:string) {
+        var steps = path.split('.');
+        var object = this._opts;
+        var totalSteps = steps.length;
+        var stepCount;
+        var step:string;
+
+        for (stepCount = 0; stepCount < totalSteps; stepCount++) {
+            step = steps[stepCount];
+            if (typeof object == 'object') {
+                object = object[step];
+            } else {
+                return;
+            }
+        }
+
+        return object;
     }
 }
 

@@ -14,14 +14,14 @@ class Component implements IComponent {
     }
 
     getService(dependantServices?:Service[]):Q.Promise<Service> {
-        debugger;
-
-        var factory = this._options.get('func');
+        var options = this.getOptions();
+        var factory = options.get('func');
+        var dependencyList = options.get('dependencies');
+        var constructorInjectionMap = options.get('inject.intoConstructor');
         var factoryArgs;
-        var inject = this._options.get('inject');
 
-        if (inject) {
-            factoryArgs = this._parseServiceFactoryArguments(dependantServices, inject);
+        if (constructorInjectionMap) {
+            factoryArgs = helpers.inject(dependencyList, dependantServices, constructorInjectionMap);
         } else {
             factoryArgs = dependantServices;
         }
@@ -41,35 +41,6 @@ class Component implements IComponent {
 
     getOptions():IOptions {
         return this._options;
-    }
-
-    _parseServiceFactoryArguments(dependencies:Service[], inject:IInjectionMap):any[] {
-        var constructorInjectionMap = inject.intoConstructor;
-        if (constructorInjectionMap) {
-            return this._createConstructorInjection(dependencies, constructorInjectionMap);
-        }
-    }
-
-    _createConstructorInjection(dependencies:Service[], injectionMap:any):any[] {
-        return helpers.mapObject(injectionMap, (dependencyId:DependencyId) => {
-            var getDependantService = () => {
-                var dependencyList = this._options.get('dependencies');
-                var dependencyIndex = dependencyList.indexOf(dependencyId);
-                var service;
-
-                if (dependencyIndex != -1) {
-                    service = dependencies[dependencyIndex];
-                }
-
-                return service;
-            };
-
-            var service = getDependantService();
-
-            if (service) {
-                return service;
-            }
-        });
     }
 }
 

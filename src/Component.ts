@@ -5,6 +5,7 @@
 import Q = require('q');
 import Options = require('./Options');
 import utils = require('./utils');
+import _ = require('lodash');
 
 class Component implements IComponent {
     _options:IOptions;
@@ -16,14 +17,19 @@ class Component implements IComponent {
 
     getService(dependantServices?:Service[]):Q.Promise<Service> {
         var factory = this._getFactory();
-        var dependencyList = this._getDependencyList();
+        var dependencyList = this.getOptions().get('dependencies');
         var constructorInjectionMap = this._getConstructorInjectionMap();
-        var factoryArgs;
+        var factoryArgs = dependantServices || [];
+        var argsFromOptions = this.getOptions().get('args');
+        var injection;
 
         if (constructorInjectionMap) {
-            factoryArgs = utils.inject(dependencyList, dependantServices, constructorInjectionMap);
-        } else {
-            factoryArgs = dependantServices;
+            injection = utils.inject(dependencyList, dependantServices, constructorInjectionMap);
+            _.extend(factoryArgs, injection);
+        }
+
+        if (argsFromOptions) {
+            _.extend(factoryArgs, argsFromOptions);
         }
 
         return Q.resolve(utils.applyFactory(factory, factoryArgs));
@@ -43,14 +49,7 @@ class Component implements IComponent {
 
     _getFactory():Factory {
         var factory = this._factory;
-        var defaultWrapper = (factory) => {return factory};
-        var wrapper = this.getOptions().get('factoryWrapper');
-
-        if (!wrapper) {
-            wrapper = defaultWrapper;
-        } else if (wrapper == 'singleton') {
-            wrapper = utils.factoryWrappers.singleton;
-        }
+        var wrapper = this._getFactoryWrapper();
 
         if (!factory) {
             factory = this.getOptions().get('func');
@@ -61,8 +60,17 @@ class Component implements IComponent {
         return factory;
     }
 
-    _getDependencyList() {
-        return this.getOptions().get('dependencies');
+    _getFactoryWrapper() {
+        var wrapper = this.getOptions().get('factoryWrapper');
+        var defaultWrapper = (factory) => {return factory};
+
+        if (!wrapper) {
+            wrapper = defaultWrapper;
+        } else if (wrapper == 'singleton') {
+            wrapper = utils.factoryWrappers.singleton;
+        }
+
+        return wrapper;
     }
 }
 

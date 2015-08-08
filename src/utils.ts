@@ -49,12 +49,10 @@ export function applyFactory(factory:Factory, factoryArgs:any[]):Service {
 export module factoryWrappers {
     export function singleton(factory) {
         var cachedService;
-
         return (...args) => {
             if (!cachedService) {
                 cachedService = applyFactory(factory, args);
             }
-
             return cachedService
         }
     }

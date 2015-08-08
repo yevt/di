@@ -3,9 +3,11 @@
  */
 class Driver {
     car: any;
+    name: string;
 
     constructor(opts) {
         this.car = opts.car;
+        this.name = opts.name;
     }
 
     drive() {

@@ -202,6 +202,20 @@ describe('context', () => {
         }).done();
     });
 
+    it('Factory arguments', (done) => {
+        var context = new Context({
+            components: [
+                {id: 'engine', func: Engine, args: ['reno']}
+            ]
+        });
+
+        context.get('engine').then((engine) => {
+            engine.start();
+            expect(engine._brand).to.equal('reno');
+            done();
+        }).done();
+    });
+
     it('Create context with options', (done) => {
         var context = new Context({
             components: [

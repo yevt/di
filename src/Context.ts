@@ -59,7 +59,7 @@ class Context implements IContext {
         var targetComponent = this._getComponent(id);
 
         if (targetComponent) {
-            var dependencyList = targetComponent.getOptions().dependencies;
+            var dependencyList = targetComponent.getOptions().get('dependencies');
             var dependenciesPromises:Q.Promise<Component>[];
 
             if (dependencyList) {

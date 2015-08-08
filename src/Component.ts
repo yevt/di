@@ -3,19 +3,20 @@
  */
 /// <reference path="./references.d.ts" />
 import Q = require('q');
+import Options = require('./Options');
 import helpers = require('./helpers');
 
 class Component implements IComponent {
-    _options:IComponentOptions;
+    _options:IOptions;
 
-    constructor(options:IComponentOptions) {
-        this._options = options;
+    constructor(opts:IComponentOptions) {
+        this._options = new Options(opts);
     }
 
     getService(dependantServices?:Service[]):Q.Promise<Service> {
-        var factory = this._options.func;
+        var factory = this._options.get('func');
         var factoryArgs;
-        var inject = this._options.inject;
+        var inject = this._options.get('inject');
 
         if (inject) {
             factoryArgs = this._parseServiceFactoryArguments(dependantServices, inject);
@@ -36,7 +37,7 @@ class Component implements IComponent {
         return result;
     }
 
-    getOptions():IComponentOptions {
+    getOptions():IOptions {
         return this._options;
     }
 
@@ -50,7 +51,7 @@ class Component implements IComponent {
     _createConstructorInjection(dependencies:Service[], injectionMap:any):any[] {
         return helpers.mapObject(injectionMap, (dependencyId:DependencyId) => {
             var getDependantService = () => {
-                var dependencyList = this.getOptions().dependencies;
+                var dependencyList = this._options.get('dependencies');
                 var dependencyIndex = dependencyList.indexOf(dependencyId);
                 var service;
 

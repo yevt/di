@@ -6,6 +6,10 @@ declare type Service = any;
 declare type ComponentId = string;
 declare type DependencyId = string;
 
+interface IOptions {
+    get(path:string):any;
+}
+
 interface IInjectionMap {
     intoConstructor?: any | any[]
 }
@@ -19,7 +23,7 @@ interface IComponentOptions {
 
 interface IComponent {
     getService(dependantServices?:Service[]):Q.Promise<Service>;
-    getOptions():IComponentOptions;
+    getOptions():IOptions;
 }
 
 interface IContextOptions {

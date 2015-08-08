@@ -1,7 +1,7 @@
 /**
  * Created by y.evtushenko on 06.08.15.
  */
-/// <reference path="../typings/tsd.d.ts" />
+/// <reference path="../src/references.d.ts" />
 
 import Context = require('../src/Context');
 

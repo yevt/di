@@ -22,3 +22,12 @@ export function mapObject(param:string|any[]|any, callback:Function) {
 
     return result;
 }
+
+export function inject(dependencyList:string[], services:Service[], injectionMap:Object) {
+    return mapObject(injectionMap, (it) => {
+        var dependencyIndex = dependencyList.indexOf(it);
+        if (dependencyIndex != -1) {
+            return services[dependencyIndex];
+        }
+    });
+}

@@ -5,7 +5,7 @@
 
 import Context = require('../src/Context');
 
-import q = require('q');
+import Q = require('q');
 import chai = require('chai');
 
 import Engine = require('./mock/Engine');
@@ -80,16 +80,14 @@ describe('context', () => {
         .done();
     });
 
-    it('Get unresolved dependency', (done) => {
-        debugger;
-
+    it('Throw unresolved dependency', (done) => {
         var context = new Context;
 
         context.get('car').catch((error) => {
             if (error.name = 'UNRESOLVED_DEPENDENCY') {
                 done();
             }
-        });
+        }).done();
     });
 
     it('Component with constructor instead of factory', (done) => {
@@ -102,10 +100,10 @@ describe('context', () => {
         context.get('engine').then((engine) => {
             engine.start();
             done();
-        });
+        }).done();
     });
 
-    it('Injection map', (done) => {
+    it('Inject into constructor', (done) => {
         var context = new Context({
             components: [
                 {id: 'engine', func: createEngine},
@@ -127,7 +125,64 @@ describe('context', () => {
             driver.drive();
             expect(driver).to.be.an.instanceOf(Driver);
             done();
+        }).done();
+    });
+
+    it('Inject into first argument of constructor', (done) => {
+        var context = new Context({
+            components: [
+                {id: 'engine', func: createEngine},
+                {id: 'car', func: createCar, dependencies: ['engine']},
+                {
+                    id: 'driver',
+                    func: Driver,
+                    dependencies: ['car'],
+                    inject: {
+                        intoConstructor: {  //no array!
+                            car: 'car'
+                        }
+                    }
+                }
+            ]
         });
+
+        context.get('driver').then((driver) => {
+            driver.drive();
+            expect(driver).to.be.an.instanceOf(Driver);
+            done();
+        }).done();
+    });
+
+    it('Factory wrapper', (done) => {
+        var context = new Context({
+            components: [
+                {
+                    id: 'engine',
+                    func: Engine,
+                    factoryWrapper: (() => {    // singleton
+                        var cachedService;
+
+                        return (service) => {
+                            if (!cachedService) {
+                                cachedService = service;
+                            }
+
+                            return cachedService;
+                        }
+                    })()
+                },
+                {id: 'car1', func: Car, dependencies:['engine']},
+                {id: 'car2', func: Car, dependencies:['engine']}
+            ]
+        });
+
+        Q.all([context.get('car1'), context.get('car2')]).then((cars) => {
+            console.log('cars ===>', cars);
+            expect(cars[0]._engine).to.equal(cars[1]._engine);
+            done();
+        }).done();
+
+
     });
 
     it('Create context with options', (done) => {
@@ -142,7 +197,7 @@ describe('context', () => {
             car.start();
             expect(car).to.be.an.instanceOf(Car);
             done();
-        });
+        }).done();
     });
 
 });

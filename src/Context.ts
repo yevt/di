@@ -19,7 +19,7 @@ class Context implements IContext {
         this._components = {};
 
         if (componentList) {
-            this._parseComponents(componentList);
+            this._registerComponents(componentList);
         }
     }
 
@@ -84,7 +84,7 @@ class Context implements IContext {
         return result;
     }
 
-    _parseComponents(componentOptionsList:IComponentOptions[]) {
+    _registerComponents(componentOptionsList:IComponentOptions[]) {
         componentOptionsList.forEach((componentOptions) => {
             this.registerComponent(componentOptions);
         });

@@ -11,6 +11,7 @@ import chai = require('chai');
 import Engine = require('./mock/Engine');
 import Car = require('./mock/Car');
 import Driver = require('./mock/Driver');
+import Component = require('../src/Component');
 
 var expect = chai.expect;
 
@@ -154,22 +155,24 @@ describe('context', () => {
     });
 
     it('Factory wrapper', (done) => {
+        debugger;
+
         var context = new Context({
             components: [
                 {
                     id: 'engine',
                     func: Engine,
-                    factoryWrapper: (() => {    // singleton
+                    factoryWrapper: (factory) => {
                         var cachedService;
 
-                        return (service) => {
+                        return (...args) => {
                             if (!cachedService) {
-                                cachedService = service;
+                                cachedService = Component.applyFactory(factory, args);
                             }
 
-                            return cachedService;
+                            return cachedService
                         }
-                    })()
+                    }
                 },
                 {id: 'car1', func: Car, dependencies:['engine']},
                 {id: 'car2', func: Car, dependencies:['engine']}

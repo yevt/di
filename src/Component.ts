@@ -26,7 +26,7 @@ class Component implements IComponent {
             factoryArgs = dependantServices;
         }
 
-        return Q.resolve(Component._applyFactory(factory, factoryArgs));
+        return Q.resolve(Component.applyFactory(factory, factoryArgs));
     }
 
     getOptions():IOptions {
@@ -43,9 +43,17 @@ class Component implements IComponent {
 
     _getFactory():Factory {
         var factory = this._factory;
+        var defaultWrapper = (factory) => {return factory};
+        var wrapper = this.getOptions().get('factoryWrapper');
+
+        if (!wrapper) {
+            wrapper = defaultWrapper;
+        }
 
         if (!factory) {
-            this._factory = factory = this.getOptions().get('func');
+            factory = this.getOptions().get('func');
+            factory = wrapper(factory);
+            this._factory = factory;
         }
 
         return factory;
@@ -55,7 +63,7 @@ class Component implements IComponent {
         return this.getOptions().get('dependencies');
     }
 
-    static _applyFactory(factory:Factory, factoryArgs:any[]):Service {
+    static applyFactory(factory:Factory, factoryArgs:any[]):Service {
         var blankService = Object.create(factory.prototype);
         var factoryProduct = factory.apply(blankService, factoryArgs);
         var result;

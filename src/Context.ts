@@ -9,13 +9,12 @@ import Q = require('q');
 class Context implements IContext {
 
     _options:IOptions;
-    _components: {[key: string]: IComponent};
+    _components: {[key: string]:IComponent};
 
     constructor(opts?:IContextOptions) {
-        var options = new Options(opts);
+        var options = this._options = new Options(opts);
         var componentList = options.get('components');
 
-        this._options = options;
         this._components = {};
 
         if (componentList) {
@@ -40,12 +39,26 @@ class Context implements IContext {
         return this._resolveDependency(id);
     }
 
-    hasComponent(id:ComponentId):boolean {
-        return this._getComponent(id) != null;
+    getOptions():IOptions {
+        return this._options;
     }
 
-    _getComponent(id:ComponentId):IComponent {
-        return this._components[id];
+    hasComponent(id:ComponentId):boolean {
+        return this.getComponent(id) != null;
+    }
+
+    getComponent(id:ComponentId):IComponent {
+        var component = this._components[id];
+        var parentContext = this.getOptions().get('parentContext');
+
+        if (!component) {
+            if (parentContext) {
+                component = parentContext.getComponent(id);
+            } else {
+
+            }
+        }
+        return component;
     }
 
     _setComponent(id:ComponentId, component:IComponent) {
@@ -59,10 +72,10 @@ class Context implements IContext {
     }
 
     _resolveDependency(id):Q.Promise<Service> {
-        var result;
-        var component = this._getComponent(id);
+        var component = this.getComponent(id);
         var dependencyList:string[];
         var servicePromiseList:Q.Promise<Component>[];
+        var result:Q.Promise<Service>;
         var error:Error;
 
         if (component) {
@@ -76,8 +89,8 @@ class Context implements IContext {
                 result = component.getService();
             }
         } else {
-            error = new Error("Unresolved dependency");
-            error.name = 'UNRESOLVED_DEPENDENCY';
+            error = new Error(`Unresolved dependency: \`${id}\``);
+            error.name = "UNKNOWN_DEPENDENCY";
             result = Q.reject(error);
         }
 

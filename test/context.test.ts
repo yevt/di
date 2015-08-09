@@ -240,21 +240,35 @@ describe('context', () => {
         }).done();
     });
 
+    it('Extend context', (done) => {
+        var fiatContext = new Context({
+            components: [
+                {
+                    id: 'engine',
+                    func: mocks.extendContext.FiatEngine
+                },
+                {
+                    id: 'car',
+                    func: mocks.extendContext.Car,
+                    dependencies:['engine']
+                }
+            ]
+        });
 
+        var renoContext = new Context({
+            parentContext: fiatContext,
+            components: [
+                {
+                    id: 'engine',
+                    func: mocks.extendContext.RenoEngine
+                }
+            ]
+        });
 
-    //xit('Inject into this', (done) => {
-    //    di.createContext({
-    //        defaultInjectionType: 'constructor',
-    //        thisInjectionPathPrefix: '_',
-    //        components: [
-    //            {id: 'engine', func: Engine},
-    //            {id: 'car', func: Car, dependencies: [{id:'engine', 'dest': 'constructor', path: '_engine'}]}
-    //        ]
-    //    }).then((context) => {
-    //        context.get('car').then((car) => {
-    //            expect(car.isStarted()).to.be.true;
-    //            done();
-    //        });
-    //    }).done();
-    //});
+        renoContext.get('car').then((car) => {
+            expect(car.getEngine().getBrand()).to.equal('reno');
+            done();
+        }).done();
+
+    });
 });

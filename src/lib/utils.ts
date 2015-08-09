@@ -23,7 +23,7 @@ export function mapObject(param:string|any[]|any, callback:Function) {
     return result;
 }
 
-export function resolveArray(object:any) {
+export function wrapIntoArray(object:any) {
     if (object && !Array.isArray(object)) {
         object = [object];
     }
@@ -51,4 +51,16 @@ export function applyFactory(factory:IFactory, factoryArgs:any):Service {
     }
 
     return result;
+}
+
+export function assign(target, source) {
+    target = target || {};
+    for (var prop in source) {
+        if (typeof source[prop] === 'object') {
+            target[prop] = assign(target[prop], source[prop]);
+        } else {
+            target[prop] = source[prop];
+        }
+    }
+    return target;
 }

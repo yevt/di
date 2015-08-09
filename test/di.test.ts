@@ -1,6 +1,6 @@
 /// <reference path="../typings/tsd.d.ts" />
 
-import * as di from '../src/di';
+import * as di from '../src/lib/di';
 
 import chai = require('chai');
 import Engine = require('./mock/Engine');

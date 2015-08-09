@@ -2,11 +2,11 @@
  * Created by y.evtushenko on 06.08.15.
  */
 /// <reference path="./references.d.ts" />
-import Component from './Component';
-import Options from './Options';
+import {Component} from './Component';
+import {Options} from './Options';
 import * as Q from 'q';
 
-export default class Context implements IContext {
+export class Context implements IContext {
 
     _options:IOptions;
     _components: {[key: string]:IComponent};

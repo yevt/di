@@ -3,7 +3,7 @@
  */
 /// <reference path="./references.d.ts" />
 
-export default class Options implements IOptions {
+export class Options implements IOptions {
     _opts: {[key:string]: any};
 
     constructor(opts) {

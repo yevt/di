@@ -45,8 +45,8 @@ function createBrowserifyBundle(files) {
 }
 function compileTests(b) {
     return b.bundle()
-        .on('error', function(error) {
-            console.error(error.message.red);
+        .on('error', function(e) {
+            console.error('Browserify error:'.red, e.message);
         })
         .pipe(source('tests.js'))
         .pipe(gulp.dest(config.glob.test.dest));

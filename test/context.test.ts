@@ -1,9 +1,9 @@
 /**
  * Created by y.evtushenko on 06.08.15.
  */
-/// <reference path="../src/references.d.ts" />
 
-import Context from '../src/Context';
+import {Context} from '../src/lib/Context';
+import {applyFactory} from '../src/lib/utils';
 
 import Q = require('q');
 import chai = require('chai');
@@ -11,8 +11,7 @@ import chai = require('chai');
 import Engine = require('./mock/Engine');
 import Car = require('./mock/Car');
 import Driver = require('./mock/Driver');
-import utils = require('../src/utils');
-import mocks = require('./mock/mocks')
+import mocks = require('./mock/mocks');
 
 var expect = chai.expect;
 
@@ -166,7 +165,7 @@ describe('context', () => {
 
                         return (...args) => {
                             if (!cachedService) {
-                                cachedService = utils.applyFactory(factory, args);
+                                cachedService = applyFactory(factory, args);
                             }
 
                             return cachedService

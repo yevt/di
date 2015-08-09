@@ -1,8 +1,8 @@
 {
-  "name": "ts-lib-boilerplate",
+  "name": "di",
   "version": "0.0.1",
   "description": "Boilerplate for library written in typescript with mocha headless tests",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "test": "gulp test",
     "install": "dev/install.sh"
@@ -30,7 +30,7 @@
     "gulp-util": "^3.0.6",
     "gutil": "^1.6.4",
     "json-stringify-safe": "^5.0.1",
-    "lodash": "^3.8.0",
+    "lodash": "^3.10.1",
     "mocha-phantomjs": "^3.5.3",
     "sinon": "^1.14.1",
     "sinon-chai": "^2.7.0",
@@ -41,6 +41,6 @@
     "watchify": "^3.2.1"
   },
   "dependencies": {
-    "lodash": "^3.10.1"
+    "q": "^1.4.1"
   }
 }

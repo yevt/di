@@ -38,4 +38,5 @@ interface IContext {
     registerComponent(options:IComponentOptions);
     hasComponent(id:ComponentId):boolean;
     get(id:ComponentId):Q.Promise<Service>;
+    getComponent(id:ComponentId):IComponent;
 }

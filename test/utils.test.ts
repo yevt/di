@@ -1,11 +1,8 @@
 /**
  * Created by y.evtushenko on 08.08.15.
  */
-/// <reference path="../src/references.d.ts" />
+import * as utils from '../src/lib/utils';
 
-import utils = require('../src/utils');
-
-import q = require('q');
 import chai = require('chai');
 var expect = chai.expect;
 

@@ -218,8 +218,6 @@ describe('context', () => {
     });
 
     it('Inject into instance', (done) => {
-        debugger;
-
         var context = new Context({
             components: [
                 {id: 'engine', func: mocks.injectIntoInstance.Engine},
@@ -241,6 +239,8 @@ describe('context', () => {
             done();
         }).done();
     });
+
+
 
     //xit('Inject into this', (done) => {
     //    di.createContext({

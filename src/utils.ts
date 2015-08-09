@@ -58,17 +58,7 @@ export module factoryWrappers {
         var cachedService;
         return (...args) => {
             if (!cachedService) {
-                var blankService = Object.create(factory.prototype);
-                var factoryProduct = factory.apply(blankService, args);
-                var result;
-
-                if (factoryProduct) {
-                    result = factoryProduct;
-                } else {
-                    result = blankService;
-                }
-
-                cachedService = result;
+                cachedService = applyFactory(factory, args);
             }
             return cachedService;
         }

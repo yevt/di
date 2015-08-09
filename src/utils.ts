@@ -23,7 +23,14 @@ export function mapObject(param:string|any[]|any, callback:Function) {
     return result;
 }
 
-export function inject(dependencyList:string[], services:any[], injectionMap:Object) {
+export function resolveArray(object:any) {
+    if (object && !Array.isArray(object)) {
+        object = [object];
+    }
+    return object;
+}
+
+export function inject(dependencyList:string[], services:any[], injectionMap:{[key: string]: any}) {
     return mapObject(injectionMap, (it) => {
         var dependencyIndex = dependencyList.indexOf(it);
         if (dependencyIndex != -1) {
@@ -32,7 +39,7 @@ export function inject(dependencyList:string[], services:any[], injectionMap:Obj
     });
 }
 
-export function applyFactory(factory:Factory, factoryArgs:any):Service {
+export function applyFactory(factory:IFactory, factoryArgs:any):Service {
     var blankService = Object.create(factory.prototype);
     var factoryProduct = factory.apply(blankService, factoryArgs);
     var result;
@@ -44,23 +51,4 @@ export function applyFactory(factory:Factory, factoryArgs:any):Service {
     }
 
     return result;
-}
-
-export function resolveArray(object:any) {
-    if (object && !Array.isArray(object)) {
-        object = [object];
-    }
-    return object;
-}
-
-export module factoryWrappers {
-    export function singleton(factory) {
-        var cachedService;
-        return (...args) => {
-            if (!cachedService) {
-                cachedService = applyFactory(factory, args);
-            }
-            return cachedService;
-        }
-    }
 }

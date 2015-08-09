@@ -1,8 +1,7 @@
 /// <reference path="../typings/tsd.d.ts" />
 
-import di = require('../src/di');
+import * as di from '../src/di';
 
-import q = require('q');
 import chai = require('chai');
 import Engine = require('./mock/Engine');
 import Car = require('./mock/Car');

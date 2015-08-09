@@ -5,7 +5,9 @@
 declare type Service = any;
 declare type ComponentId = string;
 declare type DependencyId = string;
-declare type Factory = Function;
+declare type IFactory = Function;
+
+declare type IFactoryWrapper = (Factory) => IFactory
 
 interface IOptions {
     get(path:string):any;

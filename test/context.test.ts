@@ -3,7 +3,7 @@
  */
 /// <reference path="../src/references.d.ts" />
 
-import Context = require('../src/Context');
+import Context from '../src/Context';
 
 import Q = require('q');
 import chai = require('chai');
@@ -269,6 +269,24 @@ describe('context', () => {
             expect(car.getEngine().getBrand()).to.equal('reno');
             done();
         }).done();
+    });
 
+    it('Bad factory', (done) => {
+        var factory = () => {
+            throw new Error('Bad factory');
+        };
+
+        var context = new Context({
+            components: [
+                {
+                    id: 'object', func: factory
+                }
+            ]
+        });
+
+        context.get('object').catch((error) => {
+            expect(error.message).to.equal('Bad factory');
+            done();
+        });
     });
 });

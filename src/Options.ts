@@ -3,14 +3,14 @@
  */
 /// <reference path="./references.d.ts" />
 
-class Options implements IOptions {
-    _opts: any;
+export default class Options implements IOptions {
+    _opts: {[key:string]: any};
 
-    constructor(opts = {}) {
-        this._opts = opts;
+    constructor(opts) {
+        this._opts = Object(opts);
     }
 
-    get(path:string) {
+    get(path:string):any {
         var steps = path.split('.');
         var object = this._opts;
         var totalSteps = steps.length;
@@ -29,5 +29,3 @@ class Options implements IOptions {
         return object;
     }
 }
-
-export = Options

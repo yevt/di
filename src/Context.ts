@@ -2,11 +2,11 @@
  * Created by y.evtushenko on 06.08.15.
  */
 /// <reference path="./references.d.ts" />
-import Component = require('./Component');
-import Options = require('./Options');
-import Q = require('q');
+import Component from './Component';
+import Options from './Options';
+import * as Q from 'q';
 
-class Context implements IContext {
+export default class Context implements IContext {
 
     _options:IOptions;
     _components: {[key: string]:IComponent};
@@ -54,10 +54,9 @@ class Context implements IContext {
         if (!component) {
             if (parentContext) {
                 component = parentContext.getComponent(id);
-            } else {
-
             }
         }
+
         return component;
     }
 
@@ -103,5 +102,3 @@ class Context implements IContext {
         });
     }
 }
-
-export = Context

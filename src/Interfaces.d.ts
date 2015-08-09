@@ -37,4 +37,3 @@ interface IContext {
     hasComponent(id:ComponentId):boolean;
     get(id:ComponentId):Q.Promise<Service>;
 }
-

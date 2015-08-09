@@ -12,6 +12,7 @@ import Engine = require('./mock/Engine');
 import Car = require('./mock/Car');
 import Driver = require('./mock/Driver');
 import utils = require('../src/utils');
+import mocks = require('./mock/mocks')
 
 var expect = chai.expect;
 
@@ -215,4 +216,45 @@ describe('context', () => {
             done();
         }).done();
     });
+
+    it('Inject into instance', (done) => {
+        debugger;
+
+        var context = new Context({
+            components: [
+                {id: 'engine', func: mocks.injectIntoInstance.Engine},
+                {
+                    id: 'car',
+                    func: mocks.injectIntoInstance.Car,
+                    dependencies: ['engine'],
+                    inject: {
+                        intoInstance: {
+                            _engine: 'engine'
+                        }
+                    }
+                }
+            ]
+        });
+
+        context.get('car').then((car) => {
+            expect(car.isWorking()).to.be.true;
+            done();
+        }).done();
+    });
+
+    //xit('Inject into this', (done) => {
+    //    di.createContext({
+    //        defaultInjectionType: 'constructor',
+    //        thisInjectionPathPrefix: '_',
+    //        components: [
+    //            {id: 'engine', func: Engine},
+    //            {id: 'car', func: Car, dependencies: [{id:'engine', 'dest': 'constructor', path: '_engine'}]}
+    //        ]
+    //    }).then((context) => {
+    //        context.get('car').then((car) => {
+    //            expect(car.isStarted()).to.be.true;
+    //            done();
+    //        });
+    //    }).done();
+    //});
 });

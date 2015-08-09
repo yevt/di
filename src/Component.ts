@@ -18,40 +18,54 @@ class Component implements IComponent {
     getService(dependantServices?:Service[]):Q.Promise<Service> {
         var factory = this._getFactory();
         var dependencyList = this.getOptions().get('dependencies');
-        var constructorInjectionMap = this._getConstructorInjectionMap();
+        var constructorInjectionMap =
+            utils.resolveArray(this.getOptions().get('inject.intoConstructor'));
+        var instanceInjectionMap = this.getOptions().get('inject.intoInstance');
         var factoryArgs = _.assign([], dependantServices);
         var argsFromOptions = this.getOptions().get('args');
-        var injection;
+        var blankService;
+        var factoryProduct;
+        var constructorInjection;
+        var instanceInjection;
+        var result;
+
+        blankService = Object.create(factory.prototype);
+
+        if (instanceInjectionMap) {
+            instanceInjection = utils.inject(dependencyList, dependantServices, instanceInjectionMap);
+            _.assign(blankService, instanceInjection);
+        }
 
         if (constructorInjectionMap) {
-            injection = utils.inject(dependencyList, dependantServices, constructorInjectionMap);
-            _.assign(factoryArgs, injection);
+            constructorInjection = utils.inject(dependencyList, dependantServices, constructorInjectionMap);
+            _.assign(factoryArgs, constructorInjection);
         }
 
         if (argsFromOptions) {
             _.assign(factoryArgs, argsFromOptions);
         }
 
-        return Q.resolve(utils.applyFactory(factory, factoryArgs));
+        factoryProduct = factory.apply(blankService, factoryArgs);
+
+        if (factoryProduct) {
+            result = factoryProduct;
+        } else {
+            result = blankService;
+        }
+
+        return Q.resolve(result);
     }
 
     getOptions():IOptions {
         return this._options;
     }
 
-    _getConstructorInjectionMap() {
-        var injectionMap = this.getOptions().get('inject.intoConstructor');
-        if (injectionMap && !Array.isArray(injectionMap)) {
-            injectionMap = [injectionMap];
-        }
-        return injectionMap;
-    }
-
     _getFactory():Factory {
         var factory = this._factory;
-        var wrapper = this._getFactoryWrapper();
+        var wrapper;
 
         if (!factory) {
+            wrapper = this._getFactoryWrapper();
             factory = this.getOptions().get('func');
             factory = wrapper(factory);
             this._factory = factory;

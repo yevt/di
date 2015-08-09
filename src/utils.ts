@@ -46,14 +46,32 @@ export function applyFactory(factory:Factory, factoryArgs:any):Service {
     return result;
 }
 
+export function resolveArray(object:any) {
+    if (object && !Array.isArray(object)) {
+        object = [object];
+    }
+    return object;
+}
+
 export module factoryWrappers {
     export function singleton(factory) {
         var cachedService;
         return (...args) => {
             if (!cachedService) {
-                cachedService = applyFactory(factory, args);
+                var blankService = Object.create(factory.prototype);
+                var factoryProduct = factory.apply(blankService, args);
+                var result;
+
+                if (factoryProduct) {
+                    result = factoryProduct;
+                } else {
+                    result = blankService;
+                }
+
+                cachedService = result;
             }
-            return cachedService
+            return cachedService;
         }
     }
 }
+

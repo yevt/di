@@ -51,10 +51,8 @@ export class Context implements IContext {
         var component = this._components[id];
         var parentContext = this.getOptions().get('parentContext');
 
-        if (!component) {
-            if (parentContext) {
-                component = parentContext.getComponent(id);
-            }
+        if (!component && parentContext) {
+            component = parentContext.getComponent(id);
         }
 
         return component;

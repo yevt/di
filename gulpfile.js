@@ -1,4 +1,4 @@
-var colors = require('colors');
+//var colors = require('colors');
 var gulp = require("gulp");
 var gutil = require("gutil");
 var glob = require("glob");
@@ -9,6 +9,7 @@ var _ = require('lodash');
 var source = require('vinyl-source-stream');
 var spawn = require('child_process').spawn;
 var express = require('express');
+var clean = require('gulp-clean');
 
 var config = {
     server: {
@@ -84,4 +85,13 @@ gulp.task('test:watch', function () {
             compileTests(b).on('end', mocha);
         }
     });
+});
+
+gulp.task('clean', function() {
+    gulp.src([
+        'src/**/*.js',
+        'src/**/*.js.map',
+        'test/**/*.js',
+        'test/**/*.js.map'
+    ]).pipe(clean());
 });

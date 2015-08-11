@@ -4,7 +4,7 @@
 
 declare type Service = any;
 declare type ComponentId = string;
-declare type DependencyId = string;
+//declare type DependencyId = string;
 declare type IFactory = Function;
 
 declare type IFactoryWrapper = (Factory) => IFactory
@@ -14,7 +14,8 @@ interface IOptions {
 }
 
 interface IInjectionMap {
-    intoConstructor?: any | any[]
+    intoConstructor?:Object
+    intoInstance?:Object
 }
 
 interface IComponentOptions {
@@ -30,13 +31,14 @@ interface IComponent {
 }
 
 interface IContextOptions {
-    components: IComponentOptions[];
+    components?: IComponentOptions[];
+    parentContext?: IContext;
 }
 
 interface IContext {
     destroy();
     registerComponent(options:IComponentOptions);
     hasComponent(id:ComponentId):boolean;
-    get(id:ComponentId):Q.Promise<Service>;
     getComponent(id:ComponentId):IComponent;
+    get(id:ComponentId):Q.Promise<Service>;
 }

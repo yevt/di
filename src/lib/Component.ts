@@ -2,7 +2,6 @@
  * Created by y.evtushenko on 06.08.15.
  */
 import {Options} from './Options';
-import * as factoryWrappers from './factoryWrappers';
 import {inject, wrapIntoArray, assign, clone} from './utils';
 import * as Q from 'q';
 
@@ -44,7 +43,7 @@ export class Component implements IComponent {
             clone(this.getOptions().get('inject.intoInstance'));
         var factory = this.getOptions().get('func');
 
-        var blankInstance = Object.create(factory.prototype || {});
+        var blankInstance = Object.create(factory.prototype);
         var args = [];
         var constructorInjection;
         var instanceInjection;

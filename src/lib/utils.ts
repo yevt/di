@@ -39,20 +39,6 @@ export function inject(dependencyList:string[], services:any[], injectionMap:{[k
     });
 }
 
-export function applyFactory(factory:IFactory, factoryArgs:any):IService {
-    var blankService = Object.create(factory.prototype);
-    var factoryProduct = factory.apply(blankService, factoryArgs);
-    var result;
-
-    if (factoryProduct) {
-        result = factoryProduct;
-    } else {
-        result = blankService;
-    }
-
-    return result;
-}
-
 export function assign(target, source) {
     target = target || {};
     for (var prop in source) {

@@ -3,7 +3,6 @@
  */
 
 import {Context} from '../src/lib/Context';
-import {applyFactory} from '../src/lib/utils';
 
 import Q = require('q');
 import chai = require('chai');
@@ -30,9 +29,7 @@ describe('context', () => {
 
         context.registerComponent({
             id: 'engine',
-            func: () => {
-                return new Engine;
-            }
+            func: () => {}
         });
 
         expect(context.hasComponent('engine')).to.be.ok;

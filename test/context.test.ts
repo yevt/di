@@ -157,7 +157,7 @@ describe('context', () => {
 
     it('Custom factory wrapper', (done) => {
         var Engine = function() {
-            this.klass = 'Engine';
+
         };
 
         var context = new Context({

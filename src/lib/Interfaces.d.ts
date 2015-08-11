@@ -34,7 +34,6 @@ interface IContextOptions {
 interface IContext {
     destroy();
     registerComponent(options:IComponentOptions);
-    hasComponent(id:IComponentId):boolean;
     getComponent(id:IComponentId):IComponent;
     get(id:IComponentId):Q.Promise<IService>;
 }

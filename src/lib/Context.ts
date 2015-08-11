@@ -39,23 +39,23 @@ export class Context implements IContext {
         return this._resolveDependency(id);
     }
 
-    getOptions():IOptions {
-        return this._options;
-    }
-
-    hasComponent(id:IComponentId):boolean {
-        return this.getComponent(id) != null;
-    }
-
     getComponent(id:IComponentId):IComponent {
         var component = this._components[id];
-        var parentContext = this.getOptions().get('parentContext');
+        var parentContext = this._getOptions().get('parentContext');
 
         if (!component && parentContext) {
             component = parentContext.getComponent(id);
         }
 
         return component;
+    }
+
+    hasComponent(id:IComponentId):boolean {
+        return this.getComponent(id) != null;
+    }
+
+    _getOptions():IOptions {
+        return this._options;
     }
 
     _setComponent(id:IComponentId, component:IComponent) {

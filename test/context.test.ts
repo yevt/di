@@ -282,4 +282,18 @@ describe('context', () => {
             done();
         });
     });
+
+    it('Circular dependency', (done) => {
+        var context = new Context({
+           components: [
+               {id: 'a', func: () => {return 'result-a'}, dependencies: ['b']},
+               {id: 'b', func: () => {return 'result-b'}, dependencies: ['a']}
+           ]
+        });
+
+        context.get('a').then((a) => {
+            expect(a).to.equal('result-a');
+            done();
+        }).done();
+    });
 });

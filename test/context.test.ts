@@ -193,8 +193,8 @@ describe('context', () => {
             ]
         });
 
-        Q.all([context.get('car1'), context.get('car2')]).then((cars) => {
-            expect(cars[0]._engine).to.equal(cars[1]._engine);
+        Q.allSettled([context.get('car1'), context.get('car2')]).spread((car1, car2) => {
+            expect(car1._engine).to.equal(car2._engine);
             done();
         }).done();
     });

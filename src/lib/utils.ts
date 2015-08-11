@@ -56,7 +56,7 @@ export function applyFactory(factory:IFactory, factoryArgs:any):IService {
 export function assign(target, source) {
     target = target || {};
     for (var prop in source) {
-        if (source.hasOwnProperty(prop)) {
+        if (source.hasOwnProperty(prop) && source[prop] != null) {
             if (target.hasOwnProperty(prop)) {
                 target[prop] = assign(target[prop], source[prop]);
             } else {

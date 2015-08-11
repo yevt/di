@@ -25,6 +25,7 @@ export class Component implements IComponent {
                 this._cachedServicePromise =
                     this._getServiceInstance(dependantServices)
             }
+            result = this._cachedServicePromise;
         } else {
             result = this._getServiceInstance(dependantServices);
         }

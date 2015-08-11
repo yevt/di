@@ -10,7 +10,7 @@ export class Component implements IComponent {
 
     _options:IOptions;
     _factory:IFactory;
-    _cachedServicePromise:IService;
+    _cachedServicePromise:Q.Promise<IService>;
 
     constructor(opts:IComponentOptions) {
         this._options = new Options(opts);
@@ -23,17 +23,17 @@ export class Component implements IComponent {
         if (singleton) {
             if (!this._cachedServicePromise) {
                 this._cachedServicePromise =
-                    this._getServiceInstance(dependantServices)
+                    this._createService(dependantServices)
             }
             result = this._cachedServicePromise;
         } else {
-            result = this._getServiceInstance(dependantServices);
+            result = this._createService(dependantServices);
         }
 
         return result;
     }
 
-    _getServiceInstance(dependantServices?:IService[]):IService {
+    _createService(dependantServices?:IService[]):Q.Promise<IService> {
         var dependencyList =
             clone(this.getOptions().get('dependencies'));
         var constructorInjectionMap =
@@ -44,7 +44,7 @@ export class Component implements IComponent {
             clone(this.getOptions().get('inject.intoInstance'));
         var factory = this.getOptions().get('func');
 
-        var blankInstance = Object.create(factory.prototype);
+        var blankInstance = Object.create(factory.prototype || {});
         var args = [];
         var constructorInjection;
         var instanceInjection;

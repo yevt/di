@@ -35,7 +35,7 @@ export class Context implements IContext {
      * @param id - Component id.
      * @returns {Promise<IService>}
      */
-    get(id:ComponentId):Q.Promise<IService> {
+    get(id:IComponentId):Q.Promise<IService> {
         return this._resolveDependency(id);
     }
 
@@ -43,11 +43,11 @@ export class Context implements IContext {
         return this._options;
     }
 
-    hasComponent(id:ComponentId):boolean {
+    hasComponent(id:IComponentId):boolean {
         return this.getComponent(id) != null;
     }
 
-    getComponent(id:ComponentId):IComponent {
+    getComponent(id:IComponentId):IComponent {
         var component = this._components[id];
         var parentContext = this.getOptions().get('parentContext');
 
@@ -58,11 +58,11 @@ export class Context implements IContext {
         return component;
     }
 
-    _setComponent(id:ComponentId, component:IComponent) {
+    _setComponent(id:IComponentId, component:IComponent) {
         this._components[id] = component;
     }
 
-    _resolveDependencies(ids:ComponentId[]):Q.Promise<Component>[] {
+    _resolveDependencies(ids:IComponentId[]):Q.Promise<Component>[] {
         return ids.map((id) => {
             return this._resolveDependency(id);
         });

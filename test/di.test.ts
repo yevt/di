@@ -3,8 +3,8 @@
 import * as di from '../src/lib/di';
 
 import chai = require('chai');
-import Engine = require('./mock/Engine');
-import Car = require('./mock/Car');
+import {Engine} from './mock/Engine';
+import {Car} from './mock/Car';
 
 var expect = chai.expect;
 

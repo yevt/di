@@ -8,9 +8,9 @@ import {applyFactory} from '../src/lib/utils';
 import Q = require('q');
 import chai = require('chai');
 
-import Engine = require('./mock/Engine');
-import Car = require('./mock/Car');
-import Driver = require('./mock/Driver');
+import {Engine} from './mock/Engine';
+import {Car} from './mock/Car';
+import {Driver} from './mock/Driver';
 import mocks = require('./mock/mocks');
 
 var expect = chai.expect;

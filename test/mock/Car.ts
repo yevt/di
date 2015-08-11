@@ -1,7 +1,7 @@
 /**
  * Created by y.evtushenko on 06.08.15.
  */
-class Car {
+export class Car {
     _engine: any;
 
     constructor(engine) {
@@ -12,5 +12,3 @@ class Car {
         return this._engine.start();
     }
 }
-
-export = Car;

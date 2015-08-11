@@ -1,7 +1,7 @@
 /**
  * Created by y.evtushenko on 08.08.15.
  */
-class Driver {
+export class Driver {
     car: any;
     name: string;
 
@@ -14,5 +14,3 @@ class Driver {
         this.car.start();
     }
 }
-
-export = Driver

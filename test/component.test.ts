@@ -42,11 +42,11 @@ describe('component', () => {
         Q.all([
             component.getService(['apple', 'red']),
             component.getService(['apple', 'red'])
-        ]).spread((appleService1, appleService2) => {
-            expect(appleService1.getType()).to.equal('apple');
-            expect(appleService1.getColor()).to.equal('red');
-            expect(appleService1.getSize()).to.equal('big');
-            expect(appleService1).to.equal(appleService2);
+        ]).spread((fruitService1, fruitService2) => {
+            expect(fruitService1.getType()).to.equal('apple');
+            expect(fruitService1.getColor()).to.equal('red');
+            expect(fruitService1.getSize()).to.equal('big');
+            expect(fruitService1).to.equal(fruitService2);
             done();
         }).done();
     });

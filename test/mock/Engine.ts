@@ -1,7 +1,7 @@
 /**
  * Created by y.evtushenko on 06.08.15.
  */
-class Engine {
+export class Engine {
     _brand: string;
     _isStarted: boolean;
 
@@ -14,10 +14,4 @@ class Engine {
         this._isStarted = true;
         return true;
     }
-
-    stop() {
-        this._isStarted = false;
-    }
 }
-
-export = Engine;

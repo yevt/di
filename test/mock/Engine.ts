@@ -6,7 +6,7 @@ class Engine {
     _isStarted: boolean;
 
     constructor(brand?) {
-        this._brand = brand;
+        this._brand = brand || 'Default';
         this._isStarted = false;
     }
 

@@ -2,7 +2,7 @@
  * Created by y.evtushenko on 07.08.15.
  */
 
-declare type Service = any;
+declare type IService = any;
 declare type ComponentId = string;
 //declare type DependencyId = string;
 declare type IFactory = Function;
@@ -13,20 +13,18 @@ interface IOptions {
     get(path:string):any;
 }
 
-interface IInjectionMap {
-    intoConstructor?:Object
-    intoInstance?:Object
-}
-
 interface IComponentOptions {
     id:ComponentId;
     func:Function;
     dependencies?:ComponentId[];
-    inject?: IInjectionMap;
+    inject?: {
+        intoConstructor?:Object
+        intoInstance?:Object
+    };
 }
 
 interface IComponent {
-    getService(dependantServices?:Service[]):Q.Promise<Service>;
+    getService(dependantServices?:IService[]):Q.Promise<IService>;
     getOptions():IOptions;
 }
 
@@ -40,5 +38,5 @@ interface IContext {
     registerComponent(options:IComponentOptions);
     hasComponent(id:ComponentId):boolean;
     getComponent(id:ComponentId):IComponent;
-    get(id:ComponentId):Q.Promise<Service>;
+    get(id:ComponentId):Q.Promise<IService>;
 }

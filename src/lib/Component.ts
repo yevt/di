@@ -3,92 +3,78 @@
  */
 import {Options} from './Options';
 import * as factoryWrappers from './factoryWrappers';
-import {inject, wrapIntoArray, assign} from './utils';
+import {inject, wrapIntoArray, assign, clone} from './utils';
 import * as Q from 'q';
 
 export class Component implements IComponent {
 
     _options:IOptions;
     _factory:IFactory;
+    _cachedServicePromise:IService;
 
     constructor(opts:IComponentOptions) {
         this._options = new Options(opts);
     }
 
-    getService(dependantServices?:Service[]):Q.Promise<Service> {
-        var factory = this._getFactory();
-        var dependencyList = this.getOptions().get('dependencies');
-        var constructorInjectionMap = wrapIntoArray(this.getOptions().get('inject.intoConstructor'));
-        var instanceInjectionMap = this.getOptions().get('inject.intoInstance');
-        var factoryArgs = dependantServices || [];
-        var argsFromOptions = this.getOptions().get('args');
-        var blankService;
-        var factoryProduct;
+    getService(dependantServices?:IService[]):Q.Promise<IService> {
+        var singleton = this.getOptions().get('singleton');
+        var result;
+
+        if (singleton) {
+            if (!this._cachedServicePromise) {
+                this._cachedServicePromise =
+                    this._getServiceInstance(dependantServices)
+            }
+        } else {
+            result = this._getServiceInstance(dependantServices);
+        }
+
+        return result;
+    }
+
+    _getServiceInstance(dependantServices?:IService[]):IService {
+        var dependencyList =
+            clone(this.getOptions().get('dependencies'));
+        var constructorInjectionMap =
+            clone(this.getOptions().get('inject.intoConstructor'));
+        var argsFromOptions =
+            clone(this.getOptions().get('args'));
+        var instanceInjectionMap =
+            clone(this.getOptions().get('inject.intoInstance'));
+        var factory = this.getOptions().get('func');
+
+        var blankInstance = Object.create(factory.prototype);
+        var args = [];
         var constructorInjection;
         var instanceInjection;
+        var factoryProduct;
+
+        if (dependencyList) {
+            if (!constructorInjectionMap) {
+                constructorInjectionMap = dependencyList;
+            }
+
+            constructorInjectionMap = wrapIntoArray(constructorInjectionMap);
+            constructorInjection = inject(dependencyList, dependantServices, constructorInjectionMap);
+            assign(args, constructorInjection);
+        }
+
+        if (argsFromOptions) {
+            assign(args, argsFromOptions);
+        }
+
+        if (instanceInjectionMap) {
+            instanceInjection = inject(dependencyList, dependantServices, instanceInjectionMap);
+            assign(blankInstance, instanceInjection);
+        }
 
         return Q.fcall(() => {
-            blankService = Object.create(factory.prototype);
-
-            if (instanceInjectionMap) {
-                instanceInjection = inject(dependencyList, dependantServices, instanceInjectionMap);
-                assign(blankService, instanceInjection);
-            }
-
-            if (constructorInjectionMap) {
-                constructorInjection = inject(dependencyList, dependantServices, constructorInjectionMap);
-                assign(factoryArgs, constructorInjection);
-            }
-
-            if (argsFromOptions) {
-                assign(factoryArgs, argsFromOptions);
-            }
-
-            factoryProduct = factory.apply(blankService, factoryArgs);
-
-            if (factoryProduct) {
-                return factoryProduct;
-            } else {
-                return blankService;
-            }
+            factoryProduct = factory.apply(blankInstance, args);
+            return factoryProduct || blankInstance;
         });
     }
 
     getOptions():IOptions {
         return this._options;
-    }
-
-    _getFactory():IFactory {
-        var factory = this._factory;
-        var wrapper;
-
-        if (!factory) {
-            wrapper = this._selectFactoryWrapper();
-            factory = this.getOptions().get('func');
-            factory = wrapper(factory);
-            this._factory = factory;
-        }
-
-        return factory;
-    }
-
-    _selectFactoryWrapper():IFactoryWrapper {
-        var wrapper = this.getOptions().get('factoryWrapper');
-        var error:Error;
-
-        if (typeof wrapper == 'string') {
-            wrapper = factoryWrappers[wrapper];
-            if (!wrapper) {
-                error = new Error(`Unknow factory wrapper '${wrapper}'`);
-                error.name = 'Unknown factory wrapper';
-                throw error;
-            }
-        }
-
-        if (!wrapper) {
-            wrapper = (factory) => {return factory};
-        }
-
-        return wrapper;
     }
 }

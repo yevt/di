@@ -39,7 +39,7 @@ export function inject(dependencyList:string[], services:any[], injectionMap:{[k
     });
 }
 
-export function applyFactory(factory:IFactory, factoryArgs:any):Service {
+export function applyFactory(factory:IFactory, factoryArgs:any):IService {
     var blankService = Object.create(factory.prototype);
     var factoryProduct = factory.apply(blankService, factoryArgs);
     var result;
@@ -56,11 +56,22 @@ export function applyFactory(factory:IFactory, factoryArgs:any):Service {
 export function assign(target, source) {
     target = target || {};
     for (var prop in source) {
-        if (typeof source[prop] === 'object') {
-            target[prop] = assign(target[prop], source[prop]);
-        } else {
-            target[prop] = source[prop];
+        if (source.hasOwnProperty(prop)) {
+            if (target.hasOwnProperty(prop)) {
+                target[prop] = assign(target[prop], source[prop]);
+            } else {
+                target[prop] = source[prop];
+            }
         }
     }
     return target;
+}
+
+export function clone(obj) {
+    if (null == obj || "object" != typeof obj) return obj;
+    var copy = obj.constructor();
+    for (var attr in obj) {
+        if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
+    }
+    return copy;
 }

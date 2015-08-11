@@ -61,7 +61,7 @@ describe('context', () => {
         context.registerComponent({
             id: 'engine',
             func: () => {
-                return new Engine();
+                return new Engine;
             }
         });
 
@@ -74,6 +74,7 @@ describe('context', () => {
         });
 
         context.get('car').then((car) => {
+            debugger;
             if (car.start()) {
                 done();
             }
@@ -155,32 +156,28 @@ describe('context', () => {
     });
 
     it('Custom factory wrapper', (done) => {
+        var Engine = function() {
+            this.klass = 'Engine';
+        };
+
         var context = new Context({
             components: [
                 {
                     id: 'engine',
                     func: Engine,
-                    factoryWrapper: (factory) => {
-                        var cachedService;
-
-                        return (...args) => {
-                            if (!cachedService) {
-                                cachedService = applyFactory(factory, args);
-                            }
-
-                            return cachedService
-                        }
-                    }
+                    singleton: true
                 },
                 {id: 'car1', func: Car, dependencies:['engine']},
                 {id: 'car2', func: Car, dependencies:['engine']}
             ]
         });
 
-        Q.all([context.get('car1'), context.get('car2')]).then((cars) => {
-            expect(cars[0]._engine).to.equal(cars[1]._engine);
+        Q.allSettled([context.get('car1'), context.get('car2')])
+        .spread((car1, car2) => {
+            expect(car1._engine).to.equal(car2._engine);
             done();
-        }).done();
+        })
+        .done();
     });
 
     it('Singleton factory wrapper', (done) => {
@@ -189,7 +186,7 @@ describe('context', () => {
                 {
                     id: 'engine',
                     func: Engine,
-                    factoryWrapper: 'singleton'
+                    singleton: true
                 },
                 {id: 'car1', func: Car, dependencies:['engine']},
                 {id: 'car2', func: Car, dependencies:['engine']}

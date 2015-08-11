@@ -33,9 +33,9 @@ export class Context implements IContext {
     /**
      * Create service with dependencies and return promise of the service.
      * @param id - Component id.
-     * @returns {Promise<Service>}
+     * @returns {Promise<IService>}
      */
-    get(id:ComponentId):Q.Promise<Service> {
+    get(id:ComponentId):Q.Promise<IService> {
         return this._resolveDependency(id);
     }
 
@@ -68,11 +68,11 @@ export class Context implements IContext {
         });
     }
 
-    _resolveDependency(id):Q.Promise<Service> {
+    _resolveDependency(id):Q.Promise<IService> {
         var component = this.getComponent(id);
         var dependencyList:string[];
         var servicePromiseList:Q.Promise<Component>[];
-        var result:Q.Promise<Service>;
+        var result:Q.Promise<IService>;
         var error:Error;
 
         if (component) {

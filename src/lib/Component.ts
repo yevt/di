@@ -2,7 +2,7 @@
  * Created by y.evtushenko on 06.08.15.
  */
 import {Options} from './Options';
-import {inject, wrapIntoArray, assign, clone} from './utils';
+import {inject, assign} from './utils';
 import * as Q from 'q';
 
 export class Component implements IComponent {
@@ -60,44 +60,47 @@ export class Component implements IComponent {
     }
 
     _createService(dependantServices?:IService[]):Q.Promise<IService> {
-        var dependencyList =
-            clone(this.getOptions().get('dependencies'));
-        var constructorInjectionMap =
-            clone(this.getOptions().get('inject.intoConstructor'));
-        var argsFromOptions =
-            clone(this.getOptions().get('args'));
-        var instanceInjectionMap =
-            clone(this.getOptions().get('inject.intoInstance'));
         var factory = this.getOptions().get('func');
+        if (typeof factory == "function") {
+            var dependencyList =
+                this.getOptions().get('dependencies');
+            var constructorInjectionMap =
+                this.getOptions().get('inject.intoConstructor');
+            var argsFromOptions =
+                this.getOptions().get('args');
+            var instanceInjectionMap =
+                this.getOptions().get('inject.intoInstance');
 
-        var blankInstance = Object.create(factory.prototype);
-        var args = [];
-        var constructorInjection;
-        var instanceInjection;
-        var factoryProduct;
+            var blankInstance = Object.create(factory.prototype);
+            var args = [];
+            var constructorInjection;
+            var instanceInjection;
+            var factoryProduct;
 
-        if (dependencyList) {
-            if (!constructorInjectionMap) {
-                constructorInjectionMap = dependencyList;
+            if (dependencyList) {
+                if (!constructorInjectionMap) {
+                    constructorInjectionMap = dependencyList;
+                }
+
+                constructorInjection = inject(dependencyList, dependantServices, constructorInjectionMap);
+                assign(args, constructorInjection);
             }
 
-            constructorInjectionMap = wrapIntoArray(constructorInjectionMap);
-            constructorInjection = inject(dependencyList, dependantServices, constructorInjectionMap);
-            assign(args, constructorInjection);
-        }
+            if (argsFromOptions) {
+                assign(args, argsFromOptions);
+            }
 
-        if (argsFromOptions) {
-            assign(args, argsFromOptions);
-        }
+            if (instanceInjectionMap) {
+                instanceInjection = inject(dependencyList, dependantServices, instanceInjectionMap);
+                assign(blankInstance, instanceInjection);
+            }
 
-        if (instanceInjectionMap) {
-            instanceInjection = inject(dependencyList, dependantServices, instanceInjectionMap);
-            assign(blankInstance, instanceInjection);
+            return Q.fcall(() => {
+                factoryProduct = factory.apply(blankInstance, args);
+                return factoryProduct || blankInstance;
+            });
+        } else {
+            return Q.resolve(this.getOptions().get('obj'));
         }
-
-        return Q.fcall(() => {
-            factoryProduct = factory.apply(blankInstance, args);
-            return factoryProduct || blankInstance;
-        });
     }
 }

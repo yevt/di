@@ -13,7 +13,8 @@ interface IOptions {
 
 interface IComponentOptions {
     id:IComponentId;
-    func:Function;
+    func?:Function;
+    obj?:any;
     dependencies?:IComponentId[];
     inject?: {
         intoConstructor?:Object

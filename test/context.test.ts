@@ -129,31 +129,6 @@ describe('context', () => {
         }).done();
     });
 
-    it('Inject into first argument of constructor', (done) => {
-        var context = new Context({
-            components: [
-                {id: 'engine', func: createEngine},
-                {id: 'car', func: createCar, dependencies: ['engine']},
-                {
-                    id: 'driver',
-                    func: Driver,
-                    dependencies: ['car'],
-                    inject: {
-                        intoConstructor: {  //no array!
-                            car: 'car'
-                        }
-                    }
-                }
-            ]
-        });
-
-        context.get('driver').then((driver) => {
-            driver.drive();
-            expect(driver).to.be.an.instanceOf(Driver);
-            done();
-        }).done();
-    });
-
     it('Custom factory wrapper', (done) => {
         var Engine = function() {
 
@@ -357,8 +332,7 @@ describe('context', () => {
         });
 
         var context2 = new Context({
-            parentContext: context1,
-            components: []
+            parentContext: context1
         });
 
         context2.get('engine').then((engine) => {
@@ -367,5 +341,19 @@ describe('context', () => {
                 done();
             });
         }).done();
+    });
+
+    it('Object dependency type', (done) => {
+        var context = new Context({
+            components: [
+                {id: 'engine', obj: {power: 200}},
+                {id: 'car', func: (engine) => {
+                    expect(engine.power).to.equal(200);
+                    done();
+                }, dependencies: ['engine']}
+            ]
+        });
+
+        context.get('car').done();
     });
 });

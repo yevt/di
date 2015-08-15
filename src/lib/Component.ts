@@ -32,6 +32,7 @@ export class Component implements IComponent {
             .then(() => {
                 this._instances = null;
                 this._factory = null;
+                this._options.destroy();
                 this._options = null;
             })
     }
@@ -61,6 +62,12 @@ export class Component implements IComponent {
 
     _createService(dependantServices?:IService[]):Q.Promise<IService> {
         var factory = this.getOptions().get('func');
+        var obj = this.getOptions().get('obj');
+
+        if (factory != undefined && obj != undefined) {
+            console.warn(`Both 'func' and 'obj' service sources defined, but only 'func' used`);
+        }
+
         if (typeof factory == "function") {
             var dependencyList =
                 this.getOptions().get('dependencies');
@@ -99,8 +106,12 @@ export class Component implements IComponent {
                 factoryProduct = factory.apply(blankInstance, args);
                 return factoryProduct || blankInstance;
             });
+        } else if (obj != undefined) {
+            return Q.resolve(obj);
         } else {
-            return Q.resolve(this.getOptions().get('obj'));
+            var error = new Error('No service source');
+            error.name = 'NO_SERVICE_CODE';
+            return Q.reject(error);
         }
     }
 }

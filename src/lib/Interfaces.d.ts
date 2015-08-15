@@ -9,6 +9,7 @@ declare type IFactory = Function;
 
 interface IOptions {
     get(path:string):any;
+    destroy();
 }
 
 interface IComponentOptions {

@@ -10,6 +10,10 @@ export class Options implements IOptions {
         this._opts = Object(opts);
     }
 
+    destroy() {
+        this._opts = null;
+    }
+
     get(path:string):any {
         var steps = path.split('.');
         var object = this._opts;

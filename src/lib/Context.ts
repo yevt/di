@@ -25,13 +25,14 @@ export class Context implements IContext {
     }
 
     destroy() {
-        var components = this._components;
+        var destroyPromises;
 
-        for (var id in components) {
-            if (components.hasOwnProperty(id)) {
-                components[id].destroy();
-            }
-        }
+        destroyPromises = Object.keys(this._components).map((id) => {
+            var component = this._components[id];
+            return component.destroy();
+        });
+
+        return Q.all(destroyPromises);
     }
 
     registerComponent(options:IComponentOptions, overwrite?:boolean) {

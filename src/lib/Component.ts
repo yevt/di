@@ -20,11 +20,15 @@ export class Component implements IComponent {
     destroy() {
         Q.all(this._instances)
             .then((services) => {
-                services.forEach((service) => {
-                    if (typeof service.destroy == 'function') {
-                        service.destroy();
-                    }
+                var destroyPromises = services.map((service) => {
+                    return Q.fcall(() => {
+                        if (typeof service.destroy == 'function') {
+                            return service.destroy();
+                        }
+                    });
                 });
+
+                return Q.all(destroyPromises);
             })
             .then(() => {
                 this._instances = null;

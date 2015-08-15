@@ -297,5 +297,11 @@ describe('context', () => {
         }).done();
     });
 
-    it('')
+    it('Dependency validation cache', () => {
+
+    });
+
+    it('Context destructor', () => {
+
+    });
 });

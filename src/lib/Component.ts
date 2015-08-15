@@ -36,23 +36,18 @@ export class Component implements IComponent {
 
     getService(dependantServices?:IService[]):Q.Promise<IService> {
         var singleton = this.getOptions().get('singleton');
+        var instance;
         var result;
-        var newInstanceCreated = false;
 
-        if (singleton) {
-            if (!this._cachedServicePromise) {
-                this._cachedServicePromise =
-                    this._createService(dependantServices);
-                newInstanceCreated = true;
-            }
-            result = this._cachedServicePromise;
-        } else {
-            result = this._createService(dependantServices);
-            newInstanceCreated = true;
+        if (!singleton || (singleton && this._instances.length == 0)) {
+            instance = this._createService(dependantServices);
+            this._instances.push(instance);
         }
 
-        if (newInstanceCreated) {
-            this._instances.push(result);
+        if (singleton) {
+            result = this._instances[0];
+        } else {
+            result = instance
         }
 
         return result;

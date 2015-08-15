@@ -10,13 +10,21 @@ export class Component implements IComponent {
     _options:IOptions;
     _factory:IFactory;
     _cachedServicePromise:Q.Promise<IService>;
+    _instances:Q.Promise<IService>[];
 
     constructor(opts:IComponentOptions) {
         this._options = new Options(opts);
+        this._instances = [];
     }
 
     destroy() {
-
+        Q.all(this._instances).spread((...services) => {
+            services.forEach((service) => {
+                if (typeof service.destroy == 'function') {
+                    service.destroy();
+                }
+            });
+        });
     }
 
     getService(dependantServices?:IService[]):Q.Promise<IService> {
@@ -26,11 +34,13 @@ export class Component implements IComponent {
         if (singleton) {
             if (!this._cachedServicePromise) {
                 this._cachedServicePromise =
-                    this._createService(dependantServices)
+                    this._createService(dependantServices);
+                this._instances.push(this._cachedServicePromise);
             }
             result = this._cachedServicePromise;
         } else {
             result = this._createService(dependantServices);
+            this._instances.push(result);
         }
 
         return result;

@@ -25,7 +25,13 @@ export class Context implements IContext {
     }
 
     destroy() {
+        var components = this._components;
 
+        for (var id in components) {
+            if (components.hasOwnProperty(id)) {
+                components[id].destroy();
+            }
+        }
     }
 
     registerComponent(options:IComponentOptions, overwrite?:boolean) {
@@ -159,7 +165,7 @@ export class Context implements IContext {
             } else if (result.status == false) {
                 throw result;
             } else {
-                throw `Unknown validation result: ${JSON.stringify(result, null, 2)}}`;
+                throw `Unknown validation result: ${JSON.stringify(result, null, 2)}`;
             }
         };
 

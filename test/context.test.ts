@@ -6,6 +6,8 @@ import {Context} from '../src/lib/Context';
 
 import Q = require('q');
 import chai = require('chai');
+import sinon = require("sinon");
+import sinonChai = require("sinon-chai");
 
 import {Engine} from './mock/Engine';
 import {Car} from './mock/Car';
@@ -13,6 +15,7 @@ import {Driver} from './mock/Driver';
 import mocks = require('./mock/mocks');
 
 var expect = chai.expect;
+chai.use(sinonChai);
 
 var createEngine = () => {
     return new Engine;
@@ -297,8 +300,19 @@ describe('context', () => {
         }).done();
     });
 
-    it('Dependency validation cache', () => {
+    it('Dependency validation cache', (done) => {
+        var context = new Context({
+            components: [
+                {id: 'engine', func: () => {}}
+            ]
+        });
 
+        sinon.spy(context, '_validateDependencies');
+
+        context.get('engine').then(() => {
+            expect(context._validateDependencies).to.be.calledOnce;
+            done();
+        });
     });
 
     it('Context destructor', () => {

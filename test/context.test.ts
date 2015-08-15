@@ -74,7 +74,6 @@ describe('context', () => {
         });
 
         context.get('car').then((car) => {
-            debugger;
             if (car.start()) {
                 done();
             }
@@ -312,10 +311,61 @@ describe('context', () => {
         context.get('engine').then(() => {
             expect(context._validateDependencies).to.be.calledOnce;
             done();
-        });
+        }).done();
     });
 
-    it('Context destructor', () => {
+    it('Destroy context', (done) => {
+        var service = {
+            destroy: function() {}
+        };
 
+        sinon.spy(service, 'destroy');
+
+        var factory = () => {
+            return service;
+        };
+
+        var context = new Context({
+            components: [
+                {id: 'engine', func: factory}
+            ]
+        });
+
+        context.get('engine').then((engine) => {
+            return context.destroy().then(() => {
+                expect(engine.destroy).to.be.calledOnce;
+                done();
+            });
+        }).done();
+    });
+
+    it('Destroy child contexts', (done) => {
+        var service = {
+            destroy: function() {}
+        };
+
+        sinon.spy(service, 'destroy');
+
+        var factory = () => {
+            return service;
+        };
+
+        var context1 = new Context({
+            components: [
+                {id: 'engine', func: factory}
+            ]
+        });
+
+        var context2 = new Context({
+            parentContext: context1,
+            components: []
+        });
+
+        context2.get('engine').then((engine) => {
+            return context2.destroy().then(() => {
+                expect(engine.destroy).to.be.calledOnce;
+                done();
+            });
+        }).done();
     });
 });

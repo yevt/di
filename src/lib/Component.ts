@@ -17,7 +17,7 @@ export class Component implements IComponent {
     }
 
     destroy() {
-        Q.all(this._instances)
+        return Q.all(this._instances)
             .then((services) => {
                 var destroyPromises = services.map((service) => {
                     return Q.fcall(() => {

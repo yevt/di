@@ -27,11 +27,18 @@ export class Context implements IContext {
 
     destroy() {
         var destroyPromises;
+        var parentContext = this._getOptions().get('parentContext');
 
         destroyPromises = Object.keys(this._components).map((id) => {
             var component = this._components[id];
-            return component.destroy();
+            return Q.fcall(() => {
+                return component.destroy();
+            });
         });
+
+        if (parentContext) {
+            destroyPromises.push(parentContext.destroy());
+        }
 
         return Q.all(destroyPromises);
     }

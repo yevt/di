@@ -28,8 +28,24 @@ export class Context implements IContext {
 
     }
 
-    registerComponent(options:IComponentOptions) {
-        this._setComponent(options.id, new Component(options));
+    registerComponent(options:IComponentOptions, overwrite?:boolean) {
+        var id = options.id;
+        var component:IComponent = this._getOwnComponent(id);
+        var error;
+
+        if ((component == undefined) || overwrite) {
+            delete this._validationCache[id];
+
+            if (component != undefined) {
+                component.destroy();
+            }
+
+            this._setComponent(id, new Component(options));
+        } else {
+            error = new Error(`Duplicated component '${id}'`);
+            error.name = 'BUSY_COMPONENT_ID';
+            throw error;
+        }
     }
 
     /**
@@ -57,6 +73,10 @@ export class Context implements IContext {
 
     hasComponent(id:IComponentId):boolean {
         return this.getComponent(id) != null;
+    }
+
+    _getOwnComponent(id):IComponent {
+        return this._components[id];
     }
 
     _getOptions():IOptions {
@@ -96,7 +116,7 @@ export class Context implements IContext {
 
     _registerComponents(componentOptionsList:IComponentOptions[]) {
         componentOptionsList.forEach((componentOptions) => {
-            this.registerComponent(componentOptions);
+            this.registerComponent(componentOptions, false);
         });
     }
 

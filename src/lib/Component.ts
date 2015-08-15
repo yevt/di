@@ -15,6 +15,10 @@ export class Component implements IComponent {
         this._options = new Options(opts);
     }
 
+    destroy() {
+
+    }
+
     getService(dependantServices?:IService[]):Q.Promise<IService> {
         var singleton = this.getOptions().get('singleton');
         var result;

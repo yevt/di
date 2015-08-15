@@ -24,6 +24,7 @@ interface IComponentOptions {
 interface IComponent {
     getService(dependantServices?:IService[]):Q.Promise<IService>;
     getOptions():IOptions;
+    destroy();
 }
 
 interface IContextOptions {
@@ -33,7 +34,7 @@ interface IContextOptions {
 
 interface IContext {
     destroy();
-    registerComponent(options:IComponentOptions);
+    registerComponent(options:IComponentOptions, force?:boolean):void;
     getComponent(id:IComponentId):IComponent;
     get(id:IComponentId):Q.Promise<IService>;
 }

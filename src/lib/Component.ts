@@ -9,7 +9,6 @@ export class Component implements IComponent {
 
     _options:IOptions;
     _factory:IFactory;
-    _cachedServicePromise:Q.Promise<IService>;
     _instances:Q.Promise<IService>[];
 
     constructor(opts:IComponentOptions) {
@@ -32,7 +31,6 @@ export class Component implements IComponent {
             })
             .then(() => {
                 this._instances = null;
-                this._cachedServicePromise = null;
                 this._factory = null;
                 this._options = null;
             })
@@ -55,6 +53,10 @@ export class Component implements IComponent {
         }
 
         return result;
+    }
+
+    getOptions():IOptions {
+        return this._options;
     }
 
     _createService(dependantServices?:IService[]):Q.Promise<IService> {
@@ -97,9 +99,5 @@ export class Component implements IComponent {
             factoryProduct = factory.apply(blankInstance, args);
             return factoryProduct || blankInstance;
         });
-    }
-
-    getOptions():IOptions {
-        return this._options;
     }
 }

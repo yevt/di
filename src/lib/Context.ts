@@ -11,6 +11,7 @@ export class Context implements IContext {
     _options:IOptions;
     _components: {[key: string]:IComponent};
     _validationCache: {[key: string]:IValidationResult};
+    _visited: boolean[];
 
     constructor(opts?:IContextOptions) {
         var options = this._options = new Options(opts);
@@ -128,48 +129,49 @@ export class Context implements IContext {
     }
 
     _validateDependencies(targetId) {
-        var visited = [];
+        this._visited = [];
+        return this._validate(targetId);
+    }
 
-        var validate = (id) => {
-            var dependencies;
-            var result:IValidationResult = this._validationCache[id];
-            var error;
+    _validate(id) {
+        var dependencies;
+        var result:IValidationResult = this._validationCache[id];
+        var error;
 
-            if (visited[id]) {
-                error = new Error(`Circular dependency: '${id}'`);
-                error.name = 'CIRCULAR_DEPENDENCY';
+        if (this._visited[id]) {
+            error = new Error(`Circular dependency: '${id}'`);
+            error.name = 'CIRCULAR_DEPENDENCY';
+            throw error;
+        }
+
+        this._visited[id] = true;
+
+        if (result == undefined) {
+            var component = this.getComponent(id);
+            if (component) {
+                dependencies = this.getComponent(id).getOptions().get('dependencies');
+                if (dependencies) {
+                    dependencies.forEach((id) => {
+                        this._validate(id);
+                    });
+                } else {
+                    result = {
+                        status: true
+                    };
+                }
+            } else {
+                error = new Error(`Unknown dependency: ${id}`);
+                error.name = 'UNRESOLVED_DEPENDENCY';
                 throw error;
             }
 
-            visited[id] = true;
-
-            if (result == undefined) {
-                var component = this.getComponent(id);
-                if (component) {
-                    dependencies = this.getComponent(id).getOptions().get('dependencies');
-                    if (dependencies) {
-                        dependencies.forEach(validate);
-                    } else {
-                        result = {
-                            status: true
-                        };
-                    }
-                } else {
-                    error = new Error(`Unknown dependency: ${id}`);
-                    error.name = 'UNRESOLVED_DEPENDENCY';
-                    throw error;
-                }
-
-                this._validationCache[id] = result;
-            } else if (result.status == true) {
-                return result;
-            } else if (result.status == false) {
-                throw result;
-            } else {
-                throw `Unknown validation result: ${JSON.stringify(result, null, 2)}`;
-            }
-        };
-
-        return validate(targetId);
+            this._validationCache[id] = result;
+        } else if (result.status == true) {
+            return result;
+        } else if (result.status == false) {
+            throw result;
+        } else {
+            throw `Unknown validation result: ${JSON.stringify(result, null, 2)}`;
+        }
     }
 }

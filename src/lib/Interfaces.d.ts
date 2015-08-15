@@ -37,3 +37,7 @@ interface IContext {
     getComponent(id:IComponentId):IComponent;
     get(id:IComponentId):Q.Promise<IService>;
 }
+
+interface IValidationResult {
+    status: boolean;
+}

@@ -291,8 +291,8 @@ describe('context', () => {
            ]
         });
 
-        context.get('a').then((a) => {
-            expect(a).to.equal('result-a');
+        context.get('a').catch((e) => {
+            expect(e.name).to.equal('CIRCULAR_DEPENDENCY');
             done();
         }).done();
     });

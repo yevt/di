@@ -18,28 +18,40 @@ export class Component implements IComponent {
     }
 
     destroy() {
-        Q.all(this._instances).spread((...services) => {
-            services.forEach((service) => {
-                if (typeof service.destroy == 'function') {
-                    service.destroy();
-                }
-            });
-        });
+        Q.all(this._instances)
+            .then((services) => {
+                services.forEach((service) => {
+                    if (typeof service.destroy == 'function') {
+                        service.destroy();
+                    }
+                });
+            })
+            .then(() => {
+                this._instances = null;
+                this._cachedServicePromise = null;
+                this._factory = null;
+                this._options = null;
+            })
     }
 
     getService(dependantServices?:IService[]):Q.Promise<IService> {
         var singleton = this.getOptions().get('singleton');
         var result;
+        var newInstanceCreated = false;
 
         if (singleton) {
             if (!this._cachedServicePromise) {
                 this._cachedServicePromise =
                     this._createService(dependantServices);
-                this._instances.push(this._cachedServicePromise);
+                newInstanceCreated = true;
             }
             result = this._cachedServicePromise;
         } else {
             result = this._createService(dependantServices);
+            newInstanceCreated = true;
+        }
+
+        if (newInstanceCreated) {
             this._instances.push(result);
         }
 

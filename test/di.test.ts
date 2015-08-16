@@ -18,17 +18,45 @@ describe('di', () => {
     });
 
     it('Create context with options', (done) => {
-        di.createContext({
+        var context = di.create({
             components: [
                 {id: 'engine', func: Engine},
                 {id: 'car', func: Car, dependencies: ['engine']}
             ]
-        }).then((context) => {
-            context.get('car').then((car) => {
-                car.start();
-                expect(car).to.be.an.instanceOf(Car);
-                done();
-            });
+        });
+
+        context.get('car').then((car) => {
+            car.start();
+            expect(car).to.be.an.instanceOf(Car);
+            done();
+        });
+    });
+
+    it('Components as object', (done) => {
+        var context = di.create({
+            components: {
+                engine: {func: Engine},
+                car: {func: Car, dependencies: ['engine']}
+            }
+        });
+
+        context.get('car').then((car) => {
+            expect(car).to.be.instanceOf(Car);
+            done();
+        }).done();
+    });
+
+    it('Wrap dependencies into array. Component with 1 dependency', (done) => {
+        var context = di.create({
+            components: {
+                engine: {func: Engine},
+                car: {func: Car, dependencies: 'engine'}
+            }
+        });
+
+        context.get('car').then((car) => {
+            expect(car).to.be.instanceOf(Car);
+            done();
         }).done();
     });
 });

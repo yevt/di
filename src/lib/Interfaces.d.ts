@@ -36,11 +36,18 @@ interface IContextOptions {
 
 interface IContext {
     destroy();
-    registerComponent(options:IComponentOptions, force?:boolean):void;
-    getComponent(id:IComponentId):IComponent;
+    registerComponent(options:IComponentOptions, overwrite?:boolean):void;
     get(id:IComponentId):Q.Promise<IService>;
 }
 
 interface IValidationResult {
     status: boolean;
+}
+
+interface IComponentOptionsExternal {
+    dependencies?: IComponentId[] | IComponentId;
+}
+
+interface IContextOptionsExternal {
+    components?: IComponentOptionsExternal[] | IComponentOptionsExternal;
 }

@@ -35,7 +35,7 @@ describe('context', () => {
             func: () => {}
         });
 
-        expect(context.hasComponent('engine')).to.be.ok;
+        expect(context._hasComponent('engine')).to.be.ok;
     });
 
     it('Get service without dependencies', (done) => {

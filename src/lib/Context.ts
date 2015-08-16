@@ -80,19 +80,19 @@ export class Context implements IContext {
         }
     }
 
-    getComponent(id:IComponentId):IComponent {
+    _getComponent(id:IComponentId):IComponent {
         var component = this._components[id];
         var parentContext = this._getOptions().get('parentContext');
 
         if (!component && parentContext) {
-            component = parentContext.getComponent(id);
+            component = parentContext._getComponent(id);
         }
 
         return component;
     }
 
-    hasComponent(id:IComponentId):boolean {
-        return this.getComponent(id) != null;
+    _hasComponent(id:IComponentId):boolean {
+        return this._getComponent(id) != null;
     }
 
     _getOwnComponent(id):IComponent {
@@ -114,7 +114,7 @@ export class Context implements IContext {
     }
 
     _resolveDependency(id):Q.Promise<IService> {
-        var component = this.getComponent(id);
+        var component = this._getComponent(id);
         var dependencyList:string[];
         var servicePromiseList:Q.Promise<Component>[];
         var result:Q.Promise<IService>;
@@ -159,9 +159,9 @@ export class Context implements IContext {
         this._visited[id] = true;
 
         if (result == undefined) {
-            var component = this.getComponent(id);
+            var component = this._getComponent(id);
             if (component) {
-                dependencies = this.getComponent(id).getOptions().get('dependencies');
+                dependencies = this._getComponent(id).getOptions().get('dependencies');
                 if (dependencies) {
                     dependencies.forEach((id) => {
                         this._validate(id);

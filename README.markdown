@@ -1,6 +1,8 @@
 # di
-Depencency injection module. Supports async factories.
+Depencency injection module. Supports flexible async service creation.
+[![build status](https://travis-ci.org/yevt/di.svg)](https://travis-ci.org/yevt/di)
 
+src="https://travis-ci.org/yevt/di.svg"
 # Quick start
 ```typescript
 var di = require('di');

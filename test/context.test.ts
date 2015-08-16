@@ -346,7 +346,7 @@ describe('context', () => {
     it('Object dependency type', (done) => {
         var context = new Context({
             components: [
-                {id: 'engine', obj: {power: 200}},
+                {id: 'engine', instance: {power: 200}},
                 {id: 'car', func: (engine) => {
                     expect(engine.power).to.equal(200);
                     done();
@@ -360,7 +360,7 @@ describe('context', () => {
     it('Register after initialization', (done) => {
         var context = new Context({
             components: [
-                {id: 'engine', obj: {power: 200}}
+                {id: 'engine', instance: {power: 200}}
             ]
         });
 
@@ -387,8 +387,8 @@ describe('context', () => {
         var createContext = () => {
             return new Context({
                 components: [
-                    {id: 'engine', obj: {power: 200}},
-                    {id: 'engine', obj: {power: 300}}
+                    {id: 'engine', instance: {power: 200}},
+                    {id: 'engine', instance: {power: 300}}
                 ]
             })
         };

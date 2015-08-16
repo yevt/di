@@ -64,7 +64,7 @@ export class Component implements IComponent {
 
     _createService(dependantServices?:IService[]):Q.Promise<IService> {
         var factory = this.getOptions().get('func');
-        var obj = this.getOptions().get('obj');
+        var obj = this.getOptions().get('instance');
 
         if (factory != undefined && obj != undefined) {
             console.warn(`Both 'func' and 'obj' service sources defined, but only 'func' used`);

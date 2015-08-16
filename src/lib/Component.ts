@@ -4,6 +4,27 @@
 import {Options} from './Options';
 import {inject, assign} from './utils';
 import * as Q from 'q';
+import {clone} from './utils';
+
+function parseComponentOptions(options) {
+    var options = clone(options);
+
+    if (options == 'undefined') {
+        throw 'Bad component options';
+    } else if (typeof options == 'object') {
+        if (typeof options.dependencies == 'string') {
+            options.dependencies = [options.dependencies];
+        } else if (Array.isArray(options.dependencies)) {
+            //nothing to do
+        } else if (options.dependencies == undefined) {
+            //nothing to do
+        } else {
+            throw 'Unknown dependencies format';
+        }
+    }
+
+    return options;
+}
 
 export class Component implements IComponent {
 
@@ -12,7 +33,7 @@ export class Component implements IComponent {
     _instances:Q.Promise<IService>[];
 
     constructor(opts:IComponentOptions) {
-        this._options = new Options(opts);
+        this._options = new Options(parseComponentOptions(opts));
         this._instances = [];
     }
 

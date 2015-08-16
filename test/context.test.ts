@@ -30,7 +30,7 @@ describe('context', () => {
     it('Register dependency', () => {
         var context = new Context;
 
-        context.registerComponent({
+        context.register({
             id: 'engine',
             func: () => {}
         });
@@ -41,7 +41,7 @@ describe('context', () => {
     it('Get service without dependencies', (done) => {
         var context = new Context;
 
-        context.registerComponent({
+        context.register({
             id: 'engine',
             func: () => {
                 return new Engine();
@@ -58,14 +58,14 @@ describe('context', () => {
     it('Get service with trivial dependency', (done) => {
         var context = new Context;
 
-        context.registerComponent({
+        context.register({
             id: 'engine',
             func: () => {
                 return new Engine;
             }
         });
 
-        context.registerComponent({
+        context.register({
             id: 'car',
             func: (engine) => {
                 return new Car(engine);
@@ -368,7 +368,7 @@ describe('context', () => {
             return engine;
         });
 
-        context.registerComponent({
+        context.register({
             id: 'engine', func: () => {return {
                 power: 300
             }}

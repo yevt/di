@@ -5,6 +5,33 @@
 import {Component} from './Component';
 import {Options} from './Options';
 import * as Q from 'q';
+import {clone} from './utils';
+
+function parseContextOptions(options) {
+    var options = clone(options);
+
+    if (options == undefined) {
+        //no actions
+    } else if (typeof options == 'object') {
+        if (typeof options.components == 'string') {
+            options.components = [options.components];
+        } else if (Array.isArray(options.components)) {
+            //nothing to do
+        } else if (typeof options.components == 'object') {
+            options.components = Object.keys(options.components).map((componentId) => {
+                var component = options.components[componentId];
+                component.id = componentId;
+                return component;
+            });
+        } else if (options.components == undefined) {
+            //nothing to do
+        } else {
+            throw 'Unknown components format';
+        }
+    }
+
+    return options;
+}
 
 export class Context implements IContext {
 
@@ -14,7 +41,7 @@ export class Context implements IContext {
     _visited: boolean[];
 
     constructor(opts?:IContextOptions) {
-        var options = this._options = new Options(opts);
+        var options = this._options = new Options(parseContextOptions(opts));
         var componentList = options.get('components');
 
         this._components = {};
@@ -46,19 +73,20 @@ export class Context implements IContext {
         return Q.all(destroyPromises);
     }
 
-    registerComponent(options:IComponentOptions, overwrite?:boolean) {
-        var id = options.id;
-        var component:IComponent = this._getOwnComponent(id);
+    register(options:IComponentOptions, overwrite?:boolean) {
+        var newComponent = new Component(options);
+        var id = newComponent.getOptions().get('id');
+        var oldComponent:IComponent = this._getOwnComponent(id);
         var error;
 
-        if ((component == undefined) || overwrite) {
+        if ((oldComponent == undefined) || overwrite) {
             delete this._validationCache[id];
 
-            if (component != undefined) {
-                component.destroy();
+            if (oldComponent != undefined) {
+                oldComponent.destroy();
             }
 
-            this._setComponent(id, new Component(options));
+            this._setComponent(id, newComponent);
         } else {
             error = new Error(`Duplicated component '${id}'`);
             error.name = 'DUPLICATED_COMPONENT_ID';
@@ -136,7 +164,7 @@ export class Context implements IContext {
 
     _registerComponents(componentOptionsList:IComponentOptions[]) {
         componentOptionsList.forEach((componentOptions) => {
-            this.registerComponent(componentOptions, false);
+            this.register(componentOptions, false);
         });
     }
 

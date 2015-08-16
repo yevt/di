@@ -13,7 +13,7 @@ interface IOptions {
 }
 
 interface IComponentOptions {
-    id:IComponentId;
+    id?:IComponentId;
     func?:Function;
     obj?:any;
     dependencies?:IComponentId[];
@@ -30,24 +30,16 @@ interface IComponent {
 }
 
 interface IContextOptions {
-    components?: IComponentOptions[];
+    components?: IComponentOptions[] | IComponentOptions | {[key: string]: IComponentOptions};
     parentContext?: IContext;
 }
 
 interface IContext {
     destroy();
-    registerComponent(options:IComponentOptions, overwrite?:boolean):void;
+    register(options:IComponentOptions, overwrite?:boolean):void;
     get(id:IComponentId):Q.Promise<IService>;
 }
 
 interface IValidationResult {
     status: boolean;
-}
-
-interface IComponentOptionsExternal {
-    dependencies?: IComponentId[] | IComponentId;
-}
-
-interface IContextOptionsExternal {
-    components?: IComponentOptionsExternal[] | IComponentOptionsExternal;
 }

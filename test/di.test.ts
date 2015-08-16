@@ -9,8 +9,18 @@ import {Car} from './mock/Car';
 var expect = chai.expect;
 
 describe('di', () => {
-    it('Create context', () => {
+    it('Create empty context', () => {
         var context = di.create();
+        expect(context).to.be.ok;
+    });
+
+    it('Create context with components', () => {
+        var context = di.create({
+            components: [
+                {id: 'engine', func: Engine},
+                {id: 'car', func: Car, dependencies: ['engine']}
+            ]
+        });
         expect(context).to.be.ok;
     });
 
@@ -56,6 +66,4 @@ describe('di', () => {
             done();
         }).done();
     });
-
-
 });

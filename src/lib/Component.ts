@@ -20,11 +20,13 @@ export class Component implements IComponent {
         return Q.all(this._instances)
             .then((services) => {
                 var destroyPromises = services.map((service) => {
-                    return Q.fcall(() => {
-                        if (typeof service.destroy == 'function') {
-                            return service.destroy();
+                    if (typeof service.destroy == 'function') {
+                        try {
+                            return Q.resolve(service.destroy());
+                        } catch(ex) {
+                            return Q.reject(ex);
                         }
-                    });
+                    }
                 });
 
                 return Q.all(destroyPromises);
@@ -102,10 +104,14 @@ export class Component implements IComponent {
                 assign(blankInstance, instanceInjection);
             }
 
-            return Q.fcall(() => {
+            try {
                 factoryProduct = factory.apply(blankInstance, args);
-                return factoryProduct || blankInstance;
-            });
+                return Q.resolve(factoryProduct || blankInstance);
+            } catch(ex) {
+                error = new Error(ex.message);
+                error.name = 'BAD_FACTORY';
+                return Q.reject(error);
+            }
         } else if (obj != undefined) {
             return Q.resolve(obj);
         } else {

@@ -31,9 +31,12 @@ export class Context implements IContext {
 
         destroyPromises = Object.keys(this._components).map((id) => {
             var component = this._components[id];
-            return Q.fcall(() => {
-                return component.destroy();
-            });
+
+            try {
+                return Q.resolve(component.destroy());
+            } catch(ex) {
+                return Q.reject(ex);
+            }
         });
 
         if (parentContext) {
@@ -58,7 +61,7 @@ export class Context implements IContext {
             this._setComponent(id, new Component(options));
         } else {
             error = new Error(`Duplicated component '${id}'`);
-            error.name = 'BUSY_COMPONENT_ID';
+            error.name = 'DUPLICATED_COMPONENT_ID';
             throw error;
         }
     }
@@ -69,10 +72,12 @@ export class Context implements IContext {
      * @returns {Promise<IService>}
      */
     get(id:IComponentId):Q.Promise<IService> {
-        return Q.fcall(() => {
+        try {
             this._validateDependencies(id);
             return this._resolveDependency(id);
-        });
+        } catch(ex) {
+            return Q.reject(ex);
+        }
     }
 
     getComponent(id:IComponentId):IComponent {

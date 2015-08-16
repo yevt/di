@@ -356,4 +356,43 @@ describe('context', () => {
 
         context.get('car').done();
     });
+
+    it('Register after initialization', (done) => {
+        var context = new Context({
+            components: [
+                {id: 'engine', obj: {power: 200}}
+            ]
+        });
+
+        var e1 = context.get('engine').then((engine) => {
+            return engine;
+        });
+
+        context.registerComponent({
+            id: 'engine', func: () => {return {
+                power: 300
+            }}
+        }, true);
+
+        var e2 = context.get('engine');
+
+        Q.all([e1, e2]).spread((engine1, engine2) => {
+            expect(engine1.power).to.equal(200);
+            expect(engine2.power).to.equal(300);
+            done();
+        }).done();
+    });
+
+    it('Duplicated component id', () => {
+        var createContext = () => {
+            return new Context({
+                components: [
+                    {id: 'engine', obj: {power: 200}},
+                    {id: 'engine', obj: {power: 300}}
+                ]
+            })
+        };
+
+        expect(createContext).to.throw(`Duplicated component 'engine'`);
+    });
 });

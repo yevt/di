@@ -87,9 +87,9 @@ export class Component implements IComponent {
 
     _createService(dependantServices?:IService[]):Q.Promise<IService> {
         var factory = this.getOptions().get('func');
-        var obj = this.getOptions().get('instance');
+        var instance = this.getOptions().get('instance');
 
-        if (factory != undefined && obj != undefined) {
+        if (factory != undefined && instance != undefined) {
             console.warn(`Both 'func' and 'obj' service sources defined, but only 'func' used`);
         }
 
@@ -135,8 +135,8 @@ export class Component implements IComponent {
                 error.name = 'BAD_FACTORY';
                 return Q.reject(error);
             }
-        } else if (obj != undefined) {
-            return Q.resolve(obj);
+        } else if (instance != undefined) {
+            return Q.resolve(instance);
         } else {
             var error = new Error('No service source');
             error.name = 'NO_SERVICE_CODE';

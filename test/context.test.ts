@@ -1,6 +1,7 @@
 /**
  * Created by y.evtushenko on 06.08.15.
  */
+/// <reference path="../typings/tsd.d.ts" />
 
 import {Context} from '../src/lib/Context';
 

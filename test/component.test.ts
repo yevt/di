@@ -1,6 +1,7 @@
 /**
  * Created by y.evtushenko on 11.08.15.
  */
+/// <reference path="../typings/tsd.d.ts" />
 
 import {Component} from '../src/lib/Component';
 import Q = require('q');

@@ -16,6 +16,12 @@
     },
     "lodash/lodash.d.ts": {
       "commit": "8de599097a8acb3c246f9cc152f07b323c5a8b49"
+    },
+    "sinon/sinon.d.ts": {
+      "commit": "5109e1269d6ab8e8e73b1a5e85d8ceb836d3099f"
+    },
+    "sinon-chai/sinon-chai.d.ts": {
+      "commit": "5109e1269d6ab8e8e73b1a5e85d8ceb836d3099f"
     }
   }
 }

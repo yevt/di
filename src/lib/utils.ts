@@ -1,6 +1,7 @@
 /**
  * Created by y.evtushenko on 08.08.15.
  */
+/// <reference path="./references.d.ts" />
 export function mapObject(param:string|any[]|any, callback:Function) {
     var result;
 

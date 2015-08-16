@@ -1,6 +1,7 @@
 /**
  * Created by y.evtushenko on 07.08.15.
  */
+/// <reference path="./references.d.ts" />
 
 declare type IService = any;
 declare type IComponentId = string;

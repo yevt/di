@@ -1,6 +1,8 @@
 /**
  * Created by y.evtushenko on 06.08.15.
  */
+/// <reference path="./references.d.ts" />
+
 import {Options} from './Options';
 import {inject, assign} from './utils';
 import * as Q from 'q';

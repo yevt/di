@@ -1,8 +1,6 @@
-# di
+# di [![build status](https://travis-ci.org/yevt/di.svg)](https://travis-ci.org/yevt/di)
 Depencency injection module. Supports flexible async service creation.
-[![build status](https://travis-ci.org/yevt/di.svg)](https://travis-ci.org/yevt/di)
 
-src="https://travis-ci.org/yevt/di.svg"
 # Quick start
 ```typescript
 var di = require('di');

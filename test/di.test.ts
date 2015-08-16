@@ -9,12 +9,9 @@ import {Car} from './mock/Car';
 var expect = chai.expect;
 
 describe('di', () => {
-    it('Create context', (done) => {
-        di.createContext().then((context) => {
-            expect(context).to.be.ok;
-            done();
-        })
-        .done();
+    it('Create context', () => {
+        var context = di.create();
+        expect(context).to.be.ok;
     });
 
     it('Create context with options', (done) => {

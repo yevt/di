@@ -34,9 +34,17 @@ function parseContextOptions(options) {
 }
 
 export class Context implements IContext {
-
+    /**
+     * @private
+     */
     _options:IOptions;
+
+
     _components: {[key: string]:IComponent};
+
+    /**
+     * @private
+     */
     _validationCache: {[key: string]:IValidationResult};
     _visited: boolean[];
 
